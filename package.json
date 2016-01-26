@@ -1,0 +1,6 @@
+{
+  "name": "goldfish",
+  "scripts": {
+    "start": "nw src --enable-transparent-visuals --disable-gpu"
+  }
+}

@@ -1,0 +1,24 @@
+<nav class="navbar navbar-default titlebar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <span class="navbar-brand">HOME</span>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <a ng-click="win_minimize()" ng-mouseenter="morph_icon('min')" ng-mouseleave="unmorph_icon('min')">
+          <ng-md-icon icon="{{ icons['min'] }}" size="16" options='{"rotation": "none", "duration": 375}'></ng-md-icon>
+        </a>
+      </li>
+      <li>
+        <a ng-click="win_maximize()" ng-mouseenter="morph_icon('max')" ng-mouseleave="unmorph_icon('max')">
+          <ng-md-icon icon="{{ icons['max'] }}" size="16" options='{"rotation": "none", "duration": 375}'></ng-md-icon>
+        </a>
+      </li>
+      <li>
+        <a ng-click="win_close()" ng-mouseenter="morph_icon('close')" ng-mouseleave="unmorph_icon('close')">
+          <ng-md-icon icon="{{ icons['close'] }}" size="16" options='{"rotation": "none", "duration": 375}'></ng-md-icon>
+        </a>
+      </li>
+    </ul>
+  </div><!-- /.container-fluid -->
+</nav>

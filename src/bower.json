@@ -1,0 +1,27 @@
+{
+  "name": "goldfish",
+  "description": "",
+  "main": "index.html",
+  "authors": [
+    "Deepak Sharma <dpkshrma01@gmail.com>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.9",
+    "angular-route": "~1.4.9",
+    "angular-bootstrap": "~1.1.1",
+    "angular-material-icons": "~0.6.0",
+    "svg-morpheus": "~0.1.8",
+    "bower-bootswatch-paper": "paper-less#*"
+  }
+}

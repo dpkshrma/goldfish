@@ -1,0 +1,76 @@
+html,body{
+    height: 100%;
+}
+
+body{
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
+    background-color: rgba(0,0,0,0);
+}
+
+.screen.has-sidebar{
+    display: flex;
+    height: 100%;
+}
+    .screen.has-sidebar .window-wrap{
+        flex-grow: 1;
+    }
+
+sidebar{
+    background-color: #555;
+}
+
+.sidebar{
+    width:64px;
+    background-color: #555;
+}
+    .sidebar .item{
+        height: 64px;
+    }
+        .sidebar .item .icon{
+            /*position: absolute;*/
+            height: 100%;
+            padding: 20px;
+            fill: #fff;
+        }
+        .sidebar .item div{
+            padding: 20px;
+            color: #fff;
+        }
+    .sidebar .item.menu{
+        background-color: #FFD75C;
+        fill: #555;
+    }
+    .sidebar .item.active{
+        background-color: #666;
+    }
+
+.titlebar{
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    background-color: #f0f0f0;
+}
+    .titlebar .btn{
+        border-radius: 0;
+    }
+    .titlebar .navbar-left{
+        margin-left: -15px;
+    }
+    .titlebar .navbar-brand {
+        position: absolute;
+        left: 50%;
+        margin-left: -50px !important;  /* 50% of logo width */
+        display: block;
+        color: #777;
+        font-size: 15px;
+    }
+    .titlebar ng-md-icon{
+        fill: #263238
+    }
+
+.btn, a, button{
+    -webkit-app-region: no-drag;
+    cursor: pointer
+}

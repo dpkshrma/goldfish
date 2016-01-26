@@ -1,0 +1,18 @@
+{
+  "name": "goldfish",
+  "main": "index.html",
+  "window": {
+    "title": "GoldFish",
+    "toolbar": false,
+    "frame": false,
+    "min_width": 800,
+    "min_height": 500,
+    "position": "center",
+    "transparent": "true",
+    "always-on-top": true,
+    "show": false
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  }
+}
