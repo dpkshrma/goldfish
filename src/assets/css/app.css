@@ -1,5 +1,6 @@
 html,body{
     height: 100%;
+    background-color: rgba(0,0,0,0);
 }
 
 body{
@@ -8,6 +9,9 @@ body{
     background-color: rgba(0,0,0,0);
 }
 
+.screen{
+    background-color: #fff;
+}
 .screen.has-sidebar{
     display: flex;
     height: 100%;

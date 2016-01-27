@@ -8,7 +8,7 @@
     "min_width": 800,
     "min_height": 500,
     "position": "center",
-    "transparent": "true",
+    "transparent": true,
     "always-on-top": true,
     "show": false
   },
