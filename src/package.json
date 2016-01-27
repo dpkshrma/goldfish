@@ -13,6 +13,18 @@
     "show": false
   },
   "devDependencies": {
+    "auto-launch": "^1.1.1",
     "gulp": "^3.9.0"
-  }
+  },
+  "version": "1.0.0",
+  "description": "GoldFish employs Spaced Repetition Memory Technique to enhance a user's ability to remember important facts, and media information.",
+  "dependencies": {
+    "auto-launch": "^1.1.1",
+    "gulp": "^3.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Deepak Sharma <dpkshrma01@gmail.com>",
+  "license": "MIT"
 }
