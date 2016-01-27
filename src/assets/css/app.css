@@ -4,8 +4,6 @@ html,body{
 }
 
 body{
-    -webkit-app-region: drag;
-    -webkit-user-select: none;
     background-color: rgba(0,0,0,0);
 }
 
@@ -53,8 +51,10 @@ sidebar{
     border: none;
     border-radius: 0;
     box-shadow: none;
-    -webkit-box-shadow: none;
     background-color: #f0f0f0;
+    -webkit-box-shadow: none;
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
 }
     .titlebar .btn{
         border-radius: 0;
