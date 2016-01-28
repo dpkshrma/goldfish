@@ -4,15 +4,8 @@
     app.config(['$routeProvider',function($routeProvider) {
         $routeProvider.
             when('/', {
-                'templateUrl': 'partials/home.html',
-                'controller': 'homeCtrl'
-            }).
-            when('/home', {
-                redirectTo: '/'
-            }).
-            when('/settings', {
-                'templateUrl': 'partials/settings.html',
-                'controller': 'settingsCtrl'
+                'templateUrl': 'partials/main_window.html',
+                'controller': 'mainWindowCtrl'
             }).
             when('/qpopup',{
                 'templateUrl': 'partials/qpopup.html',

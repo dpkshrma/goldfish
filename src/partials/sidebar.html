@@ -9,7 +9,7 @@
     </div>
 
     <div class="item" ng-repeat="item in items" ng-class="{active: item['is_active']}">
-        <a class="icon pull-left" ng-click="update_active_item(item)" ng-href="#/{{ item['uri'] }}">
+        <a class="icon pull-left" ng-click="update_active_item(item)" changescreen="{{ item['screen_name'] }}">
             <ng-md-icon icon="{{ item['icon_type'] }}"></ng-md-icon>
         </a>
     </div>

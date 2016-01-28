@@ -3,8 +3,12 @@
     var gui = require('nw.gui');
     var app = angular.module('goldfish.controllers', []);
 
-    app.controller('homeCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+    /***************************/
+    /* Main Window Controllers */
+    /***************************/
 
+    // Main Window Ctrl
+    app.controller('mainWindowCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
         // Check if tray icon exists, if not, create and store in $rootScope
         if (typeof $scope.main_window === 'undefined') {
             // Get main_window and add to $rootScope
@@ -36,61 +40,30 @@
 
             $scope.tray.menu = menu;
         }
-
-
-        // Trigger qpoppup
-        $rootScope.qpopup = null;
-        $rootScope.trigger_qpopup = function(){
-            $rootScope.qpopup = gui.Window.open(
-                'index.html#/qpopup',
-                {
-                    title     : 'GoldFish Options',
-                    toolbar   : false,
-                    max_width : 300,
-                    max_height: 500,
-                    focus     : true
-                }
-            );
-        };
-
-        $scope.show_devtools = function(){
-            $scope.main_window.showDevTools();
-        };
-        $scope.hide_win = function(){
-            $scope.main_window.hide();
-        };
     }]);
 
-    app.controller('qpopupCtrl', ['$scope', function($scope){
-        // pass
-        $scope.dbdata = "something";
-    }]);
-
-    app.controller('settingsCtrl', ['$scope', function($scope){
-        // pass
-    }]);
-
+    // Sidebar Ctrl
     app.controller('sidebarCtrl', ['$scope', function($scope){
         $scope.items = [
             {
-                icon_type: 'home',
-                uri      : 'home',
-                is_active: true   
+                icon_type  : 'home',
+                screen_name: 'home',
+                is_active  : true   
             },
             {
-                icon_type: 'settings',
-                uri      : 'settings',
-                is_active: false
+                icon_type  : 'settings',
+                screen_name: 'settings',
+                is_active  : false
             },
             {
-                icon_type: 'dashboard',
-                uri      : 'dashboard',
-                is_active: false
+                icon_type  : 'dashboard',
+                screen_name: 'dashboard',
+                is_active  : false
             },
             {
-                icon_type: 'my_library_add',
-                uri      : 'add_set',
-                is_active: false
+                icon_type  : 'my_library_add',
+                screen_name: 'addsets',
+                is_active  : false
             },
         ]
         $scope.sidebar_width = '64px';
@@ -111,6 +84,7 @@
         };
     }]);
 
+    // Titlebar Ctrl
     app.controller('titlebarCtrl', ['$scope', function($scope){
         $scope.is_max = false;
 
@@ -151,6 +125,52 @@
         $scope.win_close = function(){
             $scope.main_window.close();
         }
+    }]);
+
+
+    /**********************************/
+    /* Main Window Screen Controllers */
+    /**********************************/
+
+    // Home Screen Ctrl
+    app.controller('homeScreenCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+        // Trigger qpoppup
+        $rootScope.trigger_qpopup = function(){
+            $rootScope.qpopup = gui.Window.open(
+                'index.html#/qpopup',
+                {
+                    title     : 'GoldFish Options',
+                    toolbar   : false,
+                    max_width : 300,
+                    max_height: 500,
+                    focus     : true
+                }
+            );
+        };
+
+        $scope.show_devtools = function(){
+            $scope.main_window.showDevTools();
+        };
+        $scope.hide_win = function(){
+            $scope.main_window.hide();
+        };
+    }]);
+
+    // Settings Screen Ctrl
+    app.controller('settingsScreenCtrl', ['$scope', function($scope){
+        // pass
+        $scope.dbdata = "something";
+    }]);
+
+
+    /*****************************/
+    /* Extra Windows Controllers */
+    /*****************************/
+
+    // Qpopup Ctrl
+    app.controller('qpopupCtrl', ['$scope', function($scope){
+        // pass
+        $scope.dbdata = "something";
     }]);
 
 })();

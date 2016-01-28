@@ -7,18 +7,18 @@ body{
     background-color: rgba(0,0,0,0);
 }
 
-.screen{
+.main-window{
     background-color: #fff;
 }
-.screen.has-sidebar{
+.main-window.has-sidebar{
     display: flex;
     height: 100%;
 }
-    .screen.has-sidebar .window-wrap{
+    .main-window.has-sidebar .window-wrap{
         flex-grow: 1;
     }
 
-sidebar{
+gf-sidebar{
     background-color: #555;
 }
 
