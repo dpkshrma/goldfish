@@ -22,7 +22,6 @@
     "angular-bootstrap": "~1.1.1",
     "angular-material-icons": "~0.6.0",
     "svg-morpheus": "~0.1.8",
-    "bower-bootswatch-paper": "paper-less#*",
-    "pouchdb": "~5.2.0"
+    "bower-bootswatch-paper": "*"
   }
 }
