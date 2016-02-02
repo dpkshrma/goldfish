@@ -13,14 +13,15 @@
     "show": false
   },
   "devDependencies": {
-    "auto-launch": "^1.1.1",
     "gulp": "^3.9.0"
   },
   "version": "1.0.0",
   "description": "GoldFish employs Spaced Repetition Memory Technique to enhance a user's ability to remember important facts, and media information.",
   "dependencies": {
     "auto-launch": "^1.1.1",
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "nedb": "^1.7.2",
+    "nosql-schema-validator": "^1.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
