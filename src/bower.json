@@ -19,9 +19,12 @@
   "dependencies": {
     "angular": "~1.4.9",
     "angular-route": "~1.4.9",
-    "angular-bootstrap": "~1.1.1",
+    "angular-bootstrap": "~1.1.2",
     "angular-material-icons": "~0.6.0",
     "svg-morpheus": "~0.1.8",
-    "bower-bootswatch-paper": "*"
+    "bower-bootswatch-paper": "*",
+    "angular-animate": "~1.4.9",
+    "ng-img-crop": "ngImgCrop#~0.3.2",
+    "jsTag": "~0.3.6"
   }
 }

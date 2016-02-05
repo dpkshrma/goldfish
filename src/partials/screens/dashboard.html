@@ -1,1 +1,24 @@
-Dashboard Screen
+<div class="row" id="dashboard">
+    <div class="col-xs-12">
+
+        <!-- Collection List -->
+        <div class="collection-list-wrap" ng-show="show_subscreen['collection_list']">
+            <div gf-dashboard:collection-list></div>
+        </div>
+
+        <!-- New Collection Form -->
+        <div class="collection-form-wrap" ng-show="show_subscreen['collection_form']">
+            <div gf-dashboard:collection-form></div>
+        </div>
+
+        <!-- Card List -->
+        <div class="card-list-wrap" ng-show="show_subscreen['card_list']">
+            <div gf-dashboard:card-list></div>
+        </div>
+
+        <!-- New Card Form -->
+        <div class="card-form-wrap" ng-show="show_subscreen['card_form']">
+            <div gf-dashboard:card-form></div>
+        </div>
+    </div>
+</div>

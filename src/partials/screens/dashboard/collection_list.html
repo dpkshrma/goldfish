@@ -1,0 +1,36 @@
+<div class="form-group">
+    <div class="input-group">
+        <span class="input-group-addon">
+            <ng-md-icon icon="search" style="fill: #aaa"></ng-md-icon>
+        </span>
+        <input class="form-control" type="text" placeholder="Filter Collections"><br />
+    </div>
+</div>
+<div class="collection-list">
+    <a class="panel panel-default collection-panel">
+        <div class="panel-body">
+            <span class="img-center"></span>
+            <img src="assets/images/gulp.png"/>
+        </div>
+        <div class="panel-footer text-center">
+            Gulp Gulp
+        </div>
+    </a>
+    <a class="panel panel-default collection-panel">
+        <div class="panel-body">
+            <img src="assets/images/angular.png"/>
+            <span class="img-center"></span>
+        </div>
+        <div class="panel-footer text-center">
+            AngularJS
+        </div>
+    </a>
+    <a class="panel panel-default new-collection" ng-click="change_subscreen('collection_list', 'collection_form')">
+        <div class="panel-body">
+            <ng-md-icon icon="add" size="100%"></ng-md-icon>
+        </div>
+        <div class="panel-footer text-center">
+            Add a New Set
+        </div>
+    </a>
+</div>

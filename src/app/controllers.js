@@ -1,7 +1,9 @@
 (function(){
 
     var gui = require('nw.gui');
-    var app = angular.module('goldfish.controllers', []);
+    var Card = require('./app/models/card')['card'];
+    var card_schema = require('./app/models/card')['schema'];
+    var app = angular.module('goldfish.controllers', ['goldfish.services', 'jsTag', 'ui.bootstrap', 'ngImgCrop']);
 
     /***************************/
     /* Main Window Controllers */
@@ -48,7 +50,7 @@
             {
                 icon_type  : 'home',
                 screen_name: 'home',
-                is_active  : true   
+                is_active  : true
             },
             {
                 icon_type  : 'settings',
@@ -59,12 +61,7 @@
                 icon_type  : 'dashboard',
                 screen_name: 'dashboard',
                 is_active  : false
-            },
-            {
-                icon_type  : 'my_library_add',
-                screen_name: 'addsets',
-                is_active  : false
-            },
+            }
         ]
         $scope.sidebar_width = '64px';
         $scope.sidebar_full = false;
@@ -133,7 +130,7 @@
     /**********************************/
 
     // Home Screen Ctrl
-    app.controller('homeScreenCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+    app.controller('homeScreenCtrl', ['$scope', '$rootScope', 'gfDB', function($scope, $rootScope, gfDB){
         // Trigger qpoppup
         $rootScope.trigger_qpopup = function(){
             $rootScope.qpopup = gui.Window.open(
@@ -156,10 +153,167 @@
         };
     }]);
 
+    // Dashboard Screen Ctrl
+    app.controller('dashboardScreenCtrl', ['$scope', function($scope){
+        function init(){
+            // Subscreen visibility status
+            $scope.show_subscreen = {
+                collection_list: true,
+                collection_form: false,
+                card_list      : false,
+                card_form      : false
+            };
+            init_form();
+        }
+
+        function init_form(){
+            $scope.form_err = "";
+            $scope.inpt_img = "";
+            $scope.img_loaded = false;
+        }
+
+        init();
+
+        // Subscreen Transition
+        $scope.change_subscreen = function(prev, cur){
+            // clear all common scope variables
+            init_form();
+            // perform transition
+            $scope.show_subscreen[prev] = false;
+            $scope.show_subscreen[cur]  = true;
+        };
+
+        // Image handler
+        $scope.handleImageSelect = function(evt) {
+            var file = evt.currentTarget.files[0];
+            if (file) {
+                if (file.type.split('/')[0] === 'image') {
+                    $scope.img_loaded = true;
+                    var reader = new FileReader();
+                    reader.onload = function (evt) {
+                        $scope.$apply(function($scope){
+                            $scope.inpt_img = evt.target.result;
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+                else{
+                    $scope.form_warn = "Only images supported at the moment";
+                }
+            }
+            else{
+                $scope.$apply(function(){
+                    $scope.img_loaded = false;
+                });
+            }
+        };
+    }]);
+
+    // Dashboard Screen : Collection List
+    app.controller('dashboardCollectionListCtrl', ['$scope', function($scope){
+        // pass
+    }]);
+
+    // Dashboard Screen : Collection form
+    app.controller('dashboardCollectionFormCtrl', ['$scope', 'JSTagsCollection', function($scope, JSTagsCollection){
+        // Collection Form
+        function init(){
+            $scope.active_collection = {
+                name    : '',
+                keywords: '',
+                bg_img  : ''
+            }
+            // Collection Form : JSTags
+            $scope.active_collection.keywords = new JSTagsCollection([])
+            $scope.jsTagOptions = {
+                "texts": {
+                    "inputPlaceHolder": "Add Keywords"
+                },
+                "tags": $scope.active_collection.keywords
+            }
+            // Collection Form : Uploading and Cropping Image
+            $scope.active_collection.bg_img = '';
+            angular.element(document.querySelector('#inpt_collection_img')).on('change',$scope.handleImageSelect);
+        }
+
+        init();
+
+        // Collection Form : Validate data and insert into db
+        $scope.add_collection = function(){
+            if($scope.active_collection.name.length === 0){
+                $scope.form_err = "Please use some name for the collection"
+                return false;
+            }
+
+            // add collection to nedb
+            clear_form();
+
+            // clear collection form
+
+            return true;
+        }
+
+        var clear_form = function(){
+            $scope.active_collection.name   = '';
+            $scope.active_collection.bg_img = '';
+
+            // Remove tags
+            for (i in $scope.active_collection.keywords.tags){
+                var tag = $scope.active_collection.keywords.tags[i];
+                $scope.active_collection.keywords.removeTag(tag.id);
+            }
+        }
+    }])
+
+    // Dashboard Screen : Card List
+    app.controller('dashboardCardListCtrl', ['$scope', function($scope){
+        // pass
+    }]);
+
+    // Dashboard Screen : Card Form
+    app.controller('dashboardCardFormCtrl', ['$scope', function($scope){
+        // Card Form
+        $scope.active_card = {
+            question: '',
+            answer  : '',
+            media   : ''
+        };
+
+        // Card Form : Uploading and Cropping Image
+        $scope.active_card.media.card_img = '';
+        angular.element(document.querySelector('#inpt_card_img')).on('change',$scope.handleImageSelect);
+
+        // Card Form : Validate data and insert into db
+        $scope.add_card = function(){
+            var err = "";
+            if($scope.active_card.question.length === 0)
+                err = "A Question is required"
+            else if ($scope.active_card.answer.length === 0)
+                err = "Please enter some answer for your question"
+
+            if(err.length !=0){
+                $scope.form_err = err;
+                return false;
+            }
+
+            // clear Form
+            clear_form();
+
+            // add card to nedb
+
+            return true;
+        };
+
+        var clear_form = function(){
+            $scope.active_card.question = '';
+            $scope.active_card.answer   = '';
+        }
+
+    }]);
+
     // Settings Screen Ctrl
     app.controller('settingsScreenCtrl', ['$scope', function($scope){
         // pass
-        $scope.dbdata = "something";
     }]);
 
 
@@ -170,7 +324,6 @@
     // Qpopup Ctrl
     app.controller('qpopupCtrl', ['$scope', function($scope){
         // pass
-        $scope.dbdata = "something";
     }]);
 
 })();

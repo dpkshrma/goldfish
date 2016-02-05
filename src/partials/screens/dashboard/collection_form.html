@@ -1,0 +1,21 @@
+<h4 style="color: #999">New Collection</h4>
+<form class="form collection-form">
+    <span class="text-danger" ng-if="form_err">{{form_err}}</span>
+    <div class="form-group">
+        <input ng-model="active_collection.name" class="form-control" type="text" placeholder="Name of the Cards Collection">
+    </div>
+    <div class="form-group">
+        <js-tag ng-model="active_collection.keywords" js-tag-options="jsTagOptions"></js-tag>
+    </div>
+    <div class="form-group">
+        <input type="file" class="file-input" id="inpt_collection_img">
+        <label for="inpt_collection_img" class="file-input-lbl btn btn-default btn-sm" id="inpt_collection_img_lbl">Background Image</label>
+        <div class="cropArea" ng-show="img_loaded">
+            <img-crop image="inpt_img" result-image="active_collection.bg_img" area-type="square"></img-crop>
+        </div>
+    </div>
+    <div class="btn-group btn-group-justified">
+        <a class="btn btn-default" ng-click="add_collection() && change_subscreen('collection_form', 'card_list')">Add</a>
+        <a class="btn btn-default" ng-click="change_subscreen('collection_form', 'collection_list')">Cancel</a>
+    </div>
+</form>

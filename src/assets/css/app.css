@@ -7,18 +7,29 @@ body{
     background-color: rgba(0,0,0,0);
 }
 
+.main-window-wrap{
+    display: table;
+    height: 100%;
+}
+
 .main-window{
     background-color: #fff;
 }
 .main-window.has-sidebar{
-    display: flex;
+    display: table-row;
     height: 100%;
 }
     .main-window.has-sidebar .window-wrap{
-        flex-grow: 1;
+        display: table-cell;
+        width: 100%;
+        height: 100%;
+        vertical-align: top;
     }
 
 gf-sidebar{
+    display: table-cell;
+    height: 100%;
+    vertical-align: top;
     background-color: #555;
 }
 
@@ -30,7 +41,6 @@ gf-sidebar{
         height: 64px;
     }
         .sidebar .item .icon{
-            /*position: absolute;*/
             height: 100%;
             padding: 20px;
             fill: #fff;
@@ -78,3 +88,89 @@ gf-sidebar{
     -webkit-app-region: no-drag;
     cursor: pointer
 }
+
+/* screen: dashboard */
+/* Collection List */
+.collection-list{
+    margin-left: 58px;
+}
+    .collection-list .panel{
+        position: relative;
+        width: 180px;
+        height: 230px;
+        float: left;
+        margin-right: 15px;
+        text-decoration: none;
+    }
+        .collection-list .panel ng-md-icon{
+            fill: #dfdfdf;
+        }
+            .collection-list .panel:hover ng-md-icon{
+                fill: #ccc;
+            }
+        .collection-list .panel.collection-panel .panel-body {
+            height: 100%;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+            .collection-list .panel .panel-body span{
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+            }
+            .collection-list .panel .panel-body img{
+                vertical-align: middle;
+                max-width: 100%;
+                max-height: 100%;
+                margin: auto;
+            }
+        .collection-list .panel .panel-footer{
+            position: absolute;
+            opacity: 0.9;
+            width: 100%;
+            color: #555;
+            bottom: 0;
+        }
+            .collection-list .panel:hover .panel-footer{
+                color: #111;
+            }
+
+
+/* Collection Form */
+.collection-form-wrap, .card-form-wrap{
+    width: 50%;
+    margin: auto;
+}
+
+.file-input {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.file-input-lbl{
+    box-shadow: none;
+    background-color: #eee;
+    color: #888;
+}
+
+.cropArea {
+  width:100%;
+  height: 300px;
+  margin-top: 15px;
+}
+
+
+/* jstag */
+.jt-editor{
+    padding: 0;
+    border : none;
+}
+    .jt-editor .jt-tag-new{
+        width: 100% !important;
+        margin-top: 10px;
+    }
