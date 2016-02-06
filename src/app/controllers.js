@@ -1,8 +1,13 @@
 (function(){
 
-    var gui = require('nw.gui');
-    var Card = require('./app/models/card')['card'];
-    var card_schema = require('./app/models/card')['schema'];
+    var gui   = require('nw.gui');
+    var path  = require('path');
+    var async = require('async');
+
+    // Models
+    var Card       = require('./app/models/card');
+    var Collection = require('./app/models/collection');
+
     var app = angular.module('goldfish.controllers', ['goldfish.services', 'jsTag', 'ui.bootstrap', 'ngImgCrop']);
 
     /***************************/
@@ -170,6 +175,9 @@
             $scope.form_err = "";
             $scope.inpt_img = "";
             $scope.img_loaded = false;
+
+            // card list
+            $scope.card_list = {};
         }
 
         init();
@@ -215,14 +223,15 @@
     }]);
 
     // Dashboard Screen : Collection form
-    app.controller('dashboardCollectionFormCtrl', ['$scope', 'JSTagsCollection', function($scope, JSTagsCollection){
-        // Collection Form
+    app.controller('dashboardCollectionFormCtrl', ['$scope', 'JSTagsCollection', 'gfDB', 'ImageService', '$q', function($scope, JSTagsCollection, gfDB, ImageService, $q){
         function init(){
+            // Collection Form
             $scope.active_collection = {
                 name    : '',
                 keywords: '',
                 bg_img  : ''
             }
+
             // Collection Form : JSTags
             $scope.active_collection.keywords = new JSTagsCollection([])
             $scope.jsTagOptions = {
@@ -231,39 +240,108 @@
                 },
                 "tags": $scope.active_collection.keywords
             }
+
             // Collection Form : Uploading and Cropping Image
             $scope.active_collection.bg_img = '';
-            angular.element(document.querySelector('#inpt_collection_img')).on('change',$scope.handleImageSelect);
+            var inpt_img = document.querySelector('#inpt_collection_img');
+            angular.element(inpt_img).on('change',$scope.handleImageSelect);
         }
 
         init();
 
         // Collection Form : Validate data and insert into db
         $scope.add_collection = function(){
+            var dbname     = 'collection';
+            var img_ext    = '.png';
+            var new_doc_id = 1;
+            var uuid, img_name;
+
             if($scope.active_collection.name.length === 0){
                 $scope.form_err = "Please use some name for the collection"
                 return false;
             }
 
-            // add collection to nedb
-            clear_form();
+            async.waterfall([
+                function(callback){
+
+                    // bug workaround: cant get $scope.active_collection.bg_img
+                    // in gfDB functions, maybe conflicting with service scope
+                    var img_data = $scope.active_collection.bg_img;
+
+                    // get last inserted doc's id from nedb
+                    gfDB.get_latest_doc(dbname).then(
+                        function(latest_doc){
+                            if (latest_doc.length) {
+                                new_doc_id = latest_doc[0]._id + 1;
+                            }
+                            callback(null, new_doc_id, img_data);
+                        }
+                    );
+                },
+                function(doc_id, img_data, callback){
+                    img_name = '';
+
+                    // unique image name
+                    if (img_data.length) {
+                        uuid = new Date().getTime().toString();
+                        img_name = uuid + img_ext;
+                    }
+
+                    // create new collection doc
+                    var doc = new Collection({
+                        _id       : doc_id,
+                        name      : $scope.active_collection.name,
+                        keywords  : $scope.active_collection.keywords.getTagValues(),
+                        bg_img    : img_name,
+                        created_at: new Date()
+                    });
+
+                    // add collection to nedb
+                    gfDB.insert_doc(doc, dbname).then(
+                        function(new_doc){
+                            callback(null, img_name, img_data);
+                        },
+                        function(err){
+                            callback(err, false);
+                        }
+                    );
+                },
+                function(img_name, img_data, callback){
+                    if (img_name.length) {
+                        // save backgound image
+                        ImageService.save(img_name, img_data);
+                    }
+                    callback(null, true);
+                }
+            ],
+            function(err, success){
+                console.log("last function");
+                if (err) {
+                    console.log(err);
+                }
+            });
 
             // clear collection form
+            clear_form();
 
             return true;
         }
 
         var clear_form = function(){
-            $scope.active_collection.name   = '';
+
+            // store collection info, for transition to card list subscreen
+            $scope.card_list.collection = $scope.active_collection;
+
+            $scope.active_collection.name = '';
             $scope.active_collection.bg_img = '';
 
-            // Remove tags
+            // Remove tags (removing keywords doesnt clear ui)
             for (i in $scope.active_collection.keywords.tags){
                 var tag = $scope.active_collection.keywords.tags[i];
                 $scope.active_collection.keywords.removeTag(tag.id);
             }
         }
-    }])
+    }]);
 
     // Dashboard Screen : Card List
     app.controller('dashboardCardListCtrl', ['$scope', function($scope){
