@@ -223,7 +223,7 @@
     }]);
 
     // Dashboard Screen : Collection form
-    app.controller('dashboardCollectionFormCtrl', ['$scope', 'JSTagsCollection', 'gfDB', 'ImageService', '$q', function($scope, JSTagsCollection, gfDB, ImageService, $q){
+    app.controller('dashboardCollectionFormCtrl', ['$scope', 'JSTagsCollection', 'gfDB', 'ImageService', function($scope, JSTagsCollection, gfDB, ImageService){
         function init(){
             // Collection Form
             $scope.active_collection = {
@@ -315,14 +315,13 @@
                 }
             ],
             function(err, success){
-                console.log("last function");
                 if (err) {
                     console.log(err);
                 }
+                // clear collection form
+                clear_form();
             });
 
-            // clear collection form
-            clear_form();
 
             return true;
         }
