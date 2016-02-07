@@ -7,30 +7,37 @@
     </div>
 </div>
 <div class="collection-list">
-    <a class="panel panel-default collection-panel">
-        <div class="panel-body">
+    <div class="panel panel-default collection-panel" ng-repeat="collection in collection_list">
+        <div class="panel-heading">
+            <span>0 cards</span>
+            <span class="pull-right" uib-dropdown on-toggle="toggled(open)">
+              <a href id="simple-dropdown" uib-dropdown-toggle>
+                <ng-md-icon icon="keyboard_arrow_down" style="fill: #999" size=15></ng-md-icon>
+              </a>
+              <ul uib-dropdown-menu aria-labelledby="simple-dropdown">
+                  <li>
+                    <a href>Edit</a>
+                  </li>
+                  <li>
+                    <a href>Delete</a>
+                  </li>
+              </ul>
+            </span>
+        </div>
+        <div class="panel-body" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
             <span class="img-center"></span>
-            <img src="assets/images/gulp.png"/>
+            <img ng-src="{{app_datapath}}/data/images/{{collection.bg_img}}"/>
         </div>
-        <div class="panel-footer text-center">
-            Gulp Gulp
+        <div class="panel-footer text-center" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
+            {{collection.name}}
         </div>
-    </a>
-    <a class="panel panel-default collection-panel">
-        <div class="panel-body">
-            <img src="assets/images/angular.png"/>
-            <span class="img-center"></span>
-        </div>
-        <div class="panel-footer text-center">
-            AngularJS
-        </div>
-    </a>
+    </div>
     <a class="panel panel-default new-collection" ng-click="change_subscreen('collection_list', 'collection_form')">
         <div class="panel-body">
             <ng-md-icon icon="add" size="100%"></ng-md-icon>
         </div>
         <div class="panel-footer text-center">
-            Add a New Set
+            Add a New Collection
         </div>
     </a>
 </div>

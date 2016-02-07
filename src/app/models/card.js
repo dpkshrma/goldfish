@@ -1,28 +1,20 @@
 var Model = require('nosql-schema-validator');
 
-var card = function(data){
-    var schema = {
-        id      : Number,
-        set     : String,
-        category: String,
-        question: String,
-        options: [
-          {
-            id  : Number,
-            text: String
-          }
-        ],
-        media: [
-          {
-            id  : String,
-            name: String,
-            type: String,
-            path: String
-          }
-        ]
-    };
-    Model.call(this, schema, data);
+var schema = {
+    _id        : Number,
+    collection: {
+        id  : Number,
+        name: String
+    },
+    created_at: Date,
+    question  : String,
+    answer    : String,
+    media     : String
 };
+
+var card = function(data){
+    Model.call(this, schema, data);
+}
 
 card.prototype = Object.create(Model.prototype);
 

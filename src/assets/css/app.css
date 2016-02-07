@@ -101,6 +101,7 @@ gf-sidebar{
         float: left;
         margin-right: 15px;
         text-decoration: none;
+        cursor: pointer;
     }
         .collection-list .panel ng-md-icon{
             fill: #dfdfdf;
@@ -114,7 +115,7 @@ gf-sidebar{
             white-space: nowrap;
         }
 
-            .collection-list .panel .panel-body span{
+            .collection-list .panel .panel-body .img-center{
                 display: inline-block;
                 height: 100%;
                 vertical-align: middle;
@@ -125,14 +126,21 @@ gf-sidebar{
                 max-height: 100%;
                 margin: auto;
             }
-        .collection-list .panel .panel-footer{
+        .collection-list .panel .panel-footer, .collection-list .panel .panel-heading{
             position: absolute;
             opacity: 0.9;
             width: 100%;
             color: #555;
+        }
+        .collection-list .panel .panel-footer{
             bottom: 0;
         }
-            .collection-list .panel:hover .panel-footer{
+        .collection-list .panel .panel-heading{
+            background-color: rgba(0, 0, 0, 0);
+            top: 0;
+        }
+
+            .collection-list .panel:hover .panel-footer, .collection-list .panel:hover .panel-heading{
                 color: #111;
             }
 
@@ -164,6 +172,24 @@ gf-sidebar{
   margin-top: 15px;
 }
 
+/* Card List */
+.card-list-header .collection-logo img{
+    width: 50px;
+    margin-bottom: -5px;
+}
+.card-list-header .collection-info .kw{
+    background-color:#eee;
+    margin-right: 3px;
+    color: #999;
+    padding: 4px;
+    font-size: 12px;
+    border-radius: 2px;
+}
+.card-list-header .collection-edit, .card-list-header .collection-add-card{
+    fill: #e5e5e5;
+    position: relative;
+    bottom:-7px;
+}
 
 /* jstag */
 .jt-editor{

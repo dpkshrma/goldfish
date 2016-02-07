@@ -7,10 +7,14 @@
     var mkdirp    = require('mkdirp');
     var gui       = require('nw.gui');
 
-    var app      = angular.module('goldfish.services', []);
-    var db       = db_init();
+    var app       = angular.module('goldfish.services', []);
 
-    var img_dir  = path.join(gui.App.dataPath, 'data/images/');
+    var img_dir   = path.join(gui.App.dataPath, 'data/images/');
+    var db        = {};
+
+    db_init(function(db_obj){
+        db = db_obj;
+    });
 
     app.service('gfDB', ['$q', function($q){
         // deferred update
@@ -59,16 +63,34 @@
         };
     }])
 
-    function db_init(){
-        var db       = {}
-        var db_loc   = path.join(gui.App.dataPath, 'data/')
-        var db_names = ['card', 'collection']
+    function db_init(callback){
+        var db       = {};
+        var db_loc   = path.join(gui.App.dataPath, 'data/');
+        var db_name, db_path;
 
-        for (var i = 0; i < db_names.length; i++) {
-            var db_path = db_loc + db_names[i] + '.db';
-            db[db_names[i]] = new Datastore({ filename: db_path, autoload: true })
-        }
-        return db;
+        // get all collection names from collection db
+        var collection_db = new Datastore({
+            filename: db_loc+'collections.db',
+            autoload: true
+        });
+
+        collection_db.find({}, function(err, docs){
+            if (err) {
+                console.error(err);
+            }
+            else{
+                for (var i = 0; i < docs.length; i++) {
+                    db_name = "col"+docs[i]._id.toString();
+                    db_path = db_loc + db_name + '.db';
+                    db[db_name] = new Datastore({
+                        filename: db_path,
+                        autoload: true
+                    });
+                }
+                db['collections'] = collection_db;
+                callback(db);
+            }
+        });
     }
 
     function decodeBase64Image(dataString) {

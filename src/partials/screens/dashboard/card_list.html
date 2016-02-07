@@ -1,6 +1,30 @@
-<span class="h4">{{active_collection.name}}</span>
-<a class="pull-right" ng-click="change_subscreen('card_list', 'card_form')">Add a Card</a>
+<div class="card-list-header">
+    <ul class="list-inline">
+        <li class="collection-logo">
+            <img class="pull-left" ng-src="{{app_datapath}}/data/images/{{card_list.collection.bg_img}}"/>
+        </li>
+        <li class="collection-info">
+            <span class="h4">{{card_list.collection.name}}</span><br />
+            <span class="kw" ng-repeat="kw in card_list.collection.keywords">{{kw}}</span>
+        </li>
+        <li class="collection-edit">
+            <a ng-click="change_subscreen('card_list', 'card_form')" title="Edit Collection Info">
+                <ng-md-icon icon="edit"></ng-md-icon>
+            </a>
+        </li>
+        <li class="collection-add-card">
+            <a ng-click="change_subscreen('card_list', 'card_form')" title="Add a card">
+                <ng-md-icon icon="add"></ng-md-icon>
+            </a>
+        </li>
+    </ul>
+</div>
 <hr>
-<p>
-    No Cards to display.
-</p>
+<div class="card-list-body">
+    <div ng-if="!check_list()">
+        No Cards to display.
+    </div>
+    <div ng-if="check_list()">
+        {{card_list.cards}}
+    </div>
+</div>

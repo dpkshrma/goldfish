@@ -21,7 +21,9 @@
             // Get main_window and add to $rootScope
             var main_window        = gui.Window.get();
             $rootScope.main_window = main_window;
+            $scope.main_window.maximize();
             $scope.main_window.show();
+            // $scope.main_window.showDevTools();
         }
 
         // Check if tray icon exists
@@ -58,13 +60,13 @@
                 is_active  : true
             },
             {
-                icon_type  : 'settings',
-                screen_name: 'settings',
+                icon_type  : 'dashboard',
+                screen_name: 'dashboard',
                 is_active  : false
             },
             {
-                icon_type  : 'dashboard',
-                screen_name: 'dashboard',
+                icon_type  : 'settings',
+                screen_name: 'settings',
                 is_active  : false
             }
         ]
@@ -168,6 +170,12 @@
                 card_list      : false,
                 card_form      : false
             };
+
+            // app data path
+            $scope.app_datapath = gui.App.dataPath;
+
+            // card list
+            $scope.card_list = {};
             init_form();
         }
 
@@ -175,9 +183,6 @@
             $scope.form_err = "";
             $scope.inpt_img = "";
             $scope.img_loaded = false;
-
-            // card list
-            $scope.card_list = {};
         }
 
         init();
@@ -218,8 +223,24 @@
     }]);
 
     // Dashboard Screen : Collection List
-    app.controller('dashboardCollectionListCtrl', ['$scope', function($scope){
-        // pass
+    app.controller('dashboardCollectionListCtrl', ['$scope', 'gfDB', function($scope, gfDB){
+        var dbname = 'collections';
+        $scope.collection_list = [];
+        gfDB.get_all_docs(dbname).then(
+            function(docs){
+                $scope.collection_list = docs;
+            }
+        );
+        $scope.prepare_card_list = function(collection){
+            $scope.card_list.collection = collection;
+            // get cards
+            gfDB.get_all_docs('col'+collection._id.toString()).then(
+                function(docs){
+                    $scope.card_list.cards = docs;
+                }
+            )
+            return true;
+        }
     }]);
 
     // Dashboard Screen : Collection form
@@ -251,7 +272,7 @@
 
         // Collection Form : Validate data and insert into db
         $scope.add_collection = function(){
-            var dbname     = 'collection';
+            var dbname     = 'collections';
             var img_ext    = '.png';
             var new_doc_id = 1;
             var uuid, img_name;
@@ -263,7 +284,6 @@
 
             async.waterfall([
                 function(callback){
-
                     // bug workaround: cant get $scope.active_collection.bg_img
                     // in gfDB functions, maybe conflicting with service scope
                     var img_data = $scope.active_collection.bg_img;
@@ -322,7 +342,6 @@
                 clear_form();
             });
 
-
             return true;
         }
 
@@ -344,11 +363,13 @@
 
     // Dashboard Screen : Card List
     app.controller('dashboardCardListCtrl', ['$scope', function($scope){
-        // pass
+        $scope.check_list = function(){
+            return ($scope.card_list.hasOwnProperty('cards') && $scope.card_list.cards.length != 0);
+        }
     }]);
 
     // Dashboard Screen : Card Form
-    app.controller('dashboardCardFormCtrl', ['$scope', function($scope){
+    app.controller('dashboardCardFormCtrl', ['$scope', 'gfDB', 'ImageService', function($scope, gfDB, ImageService){
         // Card Form
         $scope.active_card = {
             question: '',
@@ -357,12 +378,16 @@
         };
 
         // Card Form : Uploading and Cropping Image
-        $scope.active_card.media.card_img = '';
-        angular.element(document.querySelector('#inpt_card_img')).on('change',$scope.handleImageSelect);
+        var inpt_img = document.querySelector('#inpt_card_img');
+        angular.element(inpt_img).on('change',$scope.handleImageSelect);
 
         // Card Form : Validate data and insert into db
         $scope.add_card = function(){
-            var err = "";
+            var img_ext    = '.png';
+            var new_doc_id = 1;
+            var uuid, img_name, dbname;
+            var err        = "";
+
             if($scope.active_card.question.length === 0)
                 err = "A Question is required"
             else if ($scope.active_card.answer.length === 0)
@@ -372,11 +397,74 @@
                 $scope.form_err = err;
                 return false;
             }
+            else{
+                // add card to nedb
+                dbname = 'col'+$scope.card_list.collection._id;
 
-            // clear Form
-            clear_form();
+                async.waterfall([
+                    function(callback){
+                        // bug workaround: cant get $scope.active_collection.bg_img
+                        // in gfDB functions, maybe conflicting with service scope
+                        var img_data = $scope.active_card.media;
 
-            // add card to nedb
+                        // get last inserted doc's id from nedb
+                        gfDB.get_latest_doc(dbname).then(
+                            function(latest_doc){
+                                if (latest_doc.length) {
+                                    new_doc_id = latest_doc[0]._id + 1;
+                                }
+                                callback(null, new_doc_id, img_data);
+                            }
+                        );
+                    },
+                    function(doc_id, img_data, callback){
+                        img_name = '';
+
+                        // unique image name
+                        if (img_data.length) {
+                            uuid = new Date().getTime().toString();
+                            img_name = uuid + img_ext;
+                        }
+
+                        // create new collection doc
+                        var doc = new Card({
+                            _id       : doc_id,
+                            collection: {
+                                id  : $scope.card_list.collection._id,
+                                name: $scope.card_list.collection.name
+                            },
+                            question  : $scope.active_card.question,
+                            answer    : $scope.active_card.answer,
+                            media     : img_name,
+                            created_at: new Date()
+                        });
+
+                        // add collection to nedb
+                        gfDB.insert_doc(doc, dbname).then(
+                            function(new_doc){
+                                callback(null, img_name, img_data);
+                            },
+                            function(err){
+                                callback(err, false);
+                            }
+                        );
+                    },
+                    function(img_name, img_data, callback){
+                        if (img_name.length) {
+                            // save backgound image
+                            ImageService.save(img_name, img_data);
+                        }
+                        callback(null, true);
+                    }
+                ],
+                function(err, success){
+                    if (err) {
+                        console.error(err);
+                    }
+                    // clear collection form
+                    clear_form();
+                });
+            }
 
             return true;
         };
@@ -384,6 +472,7 @@
         var clear_form = function(){
             $scope.active_card.question = '';
             $scope.active_card.answer   = '';
+            $scope.active_card.media    = '';
         }
 
     }]);
