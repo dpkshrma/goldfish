@@ -109,6 +109,38 @@ gf-sidebar{
         .collection-list .add-collection:hover .h5{
             color: #666;
         }
+    .collection-list .collection-data .delete_dialog{
+        background-color: rgba(255,255,255,0.8);
+        z-index: 105;
+        text-align: center;
+    }
+        .collection-list .collection-data .delete_dialog,
+        .collection-list .collection-data .delete_dialog .header{
+            position: absolute;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+        }
+        .collection-list .collection-data .delete_dialog .header{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+            .collection-list .collection-data .delete_dialog .header h3{
+                color: #696969;
+            }
+            .collection-list .collection-data .delete_dialog .header ng-md-icon{
+                fill: #E47D6D;
+                margin-bottom: -10px;
+            }
+            .collection-list .collection-data .delete_dialog .btn-group{
+                position: absolute;
+                bottom: 0;
+            }
+                .collection-list .collection-data .delete_dialog .btn-group .btn-danger{
+                    background-color: #E47D6D !important;
+                }
     .collection-list .collection-data .info{
         padding: 15px;
     }

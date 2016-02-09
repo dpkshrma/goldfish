@@ -10,13 +10,13 @@
     <ul class="dynamic-grid" angular-grid="collection_list" grid-width="250" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false" >
         <li data-ng-repeat="collection in collection_list" class="grid">
             <div class="collection-data">
-                <div class="delete_dialog" style="position: absolute; top:0; left:0; right:0; bottom:0; background-color: rgba(255,255,255,0.7); z-index: 105; text-align: center" ng-if="collection.show_delete_dialog">
-                    <div class="header" style="position: absolute; top: 0; bottom: 0; left:0; right:0; display: flex; justify-content: center; align-items: center;">
-                        <ng-md-icon icon="delete" style="fill: #E47D6D; margin-bottom: -10px;" size="40"></ng-md-icon>
+                <div class="delete_dialog" ng-if="collection.show_delete_dialog">
+                    <div class="header">
+                        <ng-md-icon icon="delete" size="40"></ng-md-icon>
                         <h3>Sure?</h3>
                     </div>
-                    <div class="btn-group btn-group-justified" style="position: absolute; bottom: 0">
-                        <a class="btn btn-danger" ng-click="confirm_delete(true, collection._id)" style="background-color: #E47D6D">Yes</a>
+                    <div class="btn-group btn-group-justified">
+                        <a class="btn btn-danger" ng-click="confirm_delete(true, collection._id)">Yes</a>
                         <a class="btn btn-default" ng-click="collection.show_delete_dialog = false">No</a>
                     </div>
                 </div>
