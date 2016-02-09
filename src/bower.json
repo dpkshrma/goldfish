@@ -28,6 +28,6 @@
     "jsTag": "~0.3.6",
     "ng-img-crop-full-extended": "ngImgCropFullExtended#~0.4.9",
     "angulargrid": "~0.4.0",
-    "angular-bootstrap-toggle-switch": "~0.5.6"
+    "angular-ui-switch": "~0.1.1"
   }
 }

@@ -223,15 +223,21 @@
     }]);
 
     // Dashboard Screen : Collection List
-    app.controller('dashboardCollectionListCtrl', ['$scope', 'gfDB', function($scope, gfDB){
-        var dbname = 'collections';
-        $scope.collection_list = [];
-        gfDB.get_all_docs(dbname).then(
-            function(docs){
-                $scope.collection_list = docs;
-            }
-        );
+    app.controller('dashboardCollectionListCtrl', ['$scope', 'gfDB', '$timeout', function($scope, gfDB, $timeout){
+        var init = function(){
+            $scope.flash_toggle_promises = {};
+            $scope.collection_list = [];
+
+            gfDB.get_all_docs('collections').then(
+                function(docs){
+                    $scope.collection_list = docs;
+                }
+            );
+        }
+        init();
+
         $scope.prepare_card_list = function(collection){
+            // card_list initialized in dashboardScreenCtrl
             $scope.card_list.collection = collection;
             // get cards
             gfDB.get_all_docs('col'+collection._id.toString()).then(
@@ -240,6 +246,44 @@
                 }
             )
             return true;
+        }
+
+        $scope.toggle_flash = function(collection){
+            var col_id = collection._id;
+
+            if ($scope.flash_toggle_promises[col_id]) {
+                // check whether promise has been resolved
+                if ($scope.flash_toggle_promises[col_id].alive){
+                    $timeout.cancel($scope.flash_toggle_promises[col_id].promise);
+                    delete $scope.flash_toggle_promises[col_id];
+                    return;
+                }
+            }
+
+            var promise_obj = {}
+            promise_obj.alive = true;
+
+            promise_obj.promise = $timeout(function(){
+                var query   = {_id: col_id},
+                    update  = {$set: {flash: collection.flash}},
+                    options = {},
+                    dbname  = 'collections';
+                // flash toggle timout hit
+                gfDB.update_doc(query, update, options, dbname);
+            }, 1000);
+
+            promise_obj.promise.then(
+                function(){
+                    // promise completed, db updated
+                    promise_obj.alive = false;
+                },
+                function(){
+                    // promise cancelled, db untouched
+                }
+            );
+
+            // flash toggle timeout initialized
+            $scope.flash_toggle_promises[col_id] = promise_obj;
         }
     }]);
 

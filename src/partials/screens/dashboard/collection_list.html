@@ -10,7 +10,7 @@
     <ul class="dynamic-grid" angular-grid="collection_list" grid-width="250" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false" >
         <li data-ng-repeat="collection in collection_list" class="grid">
             <div class="collection-data">
-                <div class="img" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
+                <div class="img" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')" ng-if="collection.bg_img">
                     <img ng-src="{{app_datapath}}/data/local/images/{{collection.bg_img}}" class="grid-img" />
                 </div>
                 <div class="info">
@@ -18,11 +18,9 @@
                         {{collection.name}}
                     </span>
                     <div class="actions pull-right">
-                        <toggle-switch
-                            ng-model="switchStatus"
-                            knob-label=""
-                            class="switch-custom switch-mini switch-success">
-                        </toggle-switch>
+                        <span ng-click="toggle_flash(collection)">
+                            <switch ng-model="collection.flash" class="small green"></switch>
+                        </span>
                         <a><ng-md-icon icon="edit" size="18"></ng-md-icon></a>
                         <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a>
                     </div>

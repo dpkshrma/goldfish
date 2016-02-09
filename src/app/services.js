@@ -37,6 +37,15 @@
                 });
                 return def.promise;
             },
+            update_doc: function(query, update, options, dbname){
+                var def = $q.defer();
+                // validation checks on args
+                db[dbname].update(query, update, options, function(err, numReplaced){
+                    if (err) return def.reject(err);
+                    else def.resolve;
+                });
+                return def.promise;
+            },
             get_all_docs: function(dbname){
                 var def = $q.defer();
                 if (db.hasOwnProperty(dbname)) {
