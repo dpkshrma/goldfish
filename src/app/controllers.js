@@ -295,6 +295,9 @@
                                 new_doc_id = latest_doc[0]._id + 1;
                             }
                             callback(null, new_doc_id, img_data);
+                        },
+                        function(err){
+                            callback(err, {});
                         }
                     );
                 },
@@ -321,45 +324,43 @@
                     // add collection to nedb
                     gfDB.insert_doc(doc, dbname).then(
                         function(new_doc){
-                            callback(null, img_name, img_data);
+                            callback(null, img_name, img_data, new_doc);
                         },
                         function(err){
-                            callback(err, false);
+                            callback(err, {});
                         }
                     );
                 },
-                function(img_name, img_data, callback){
+                function(img_name, img_data, new_doc, callback){
+                    var result = {};
                     if (img_name.length) {
                         // save backgound image
                         ImageService.save(img_name, img_data);
                     }
-                    callback(null, true);
+                    result.new_doc = new_doc;
+                    callback(null, result);
                 }
             ],
-            function(err, success){
+            function(err, result){
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                 }
+
+                // store collection info, for transition to card list subscreen
+                $scope.card_list.collection = result.new_doc;
+
                 // clear collection form
-                clear_form();
+                $scope.active_collection.name = '';
+                $scope.active_collection.bg_img = '';
+
+                // Remove tags (removing keywords doesnt clear ui)
+                for (i in $scope.active_collection.keywords.tags){
+                    var tag = $scope.active_collection.keywords.tags[i];
+                    $scope.active_collection.keywords.removeTag(tag.id);
+                }
             });
 
             return true;
-        }
-
-        var clear_form = function(){
-
-            // store collection info, for transition to card list subscreen
-            $scope.card_list.collection = $scope.active_collection;
-
-            $scope.active_collection.name = '';
-            $scope.active_collection.bg_img = '';
-
-            // Remove tags (removing keywords doesnt clear ui)
-            for (i in $scope.active_collection.keywords.tags){
-                var tag = $scope.active_collection.keywords.tags[i];
-                $scope.active_collection.keywords.removeTag(tag.id);
-            }
         }
     }]);
 
