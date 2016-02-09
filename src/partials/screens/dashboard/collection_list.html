@@ -7,37 +7,29 @@
     </div>
 </div>
 <div class="collection-list">
-    <div class="panel panel-default collection-panel" ng-repeat="collection in collection_list">
-        <div class="panel-heading">
-            <span>0 cards</span>
-            <span class="pull-right" uib-dropdown on-toggle="toggled(open)">
-              <a href id="simple-dropdown" uib-dropdown-toggle>
-                <ng-md-icon icon="keyboard_arrow_down" style="fill: #999" size=15></ng-md-icon>
-              </a>
-              <ul uib-dropdown-menu aria-labelledby="simple-dropdown">
-                  <li>
-                    <a href>Edit</a>
-                  </li>
-                  <li>
-                    <a href>Delete</a>
-                  </li>
-              </ul>
-            </span>
-        </div>
-        <div class="panel-body" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
-            <span class="img-center"></span>
-            <img ng-src="{{app_datapath}}/data/images/{{collection.bg_img}}"/>
-        </div>
-        <div class="panel-footer text-center" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
-            {{collection.name}}
-        </div>
-    </div>
-    <a class="panel panel-default new-collection" ng-click="change_subscreen('collection_list', 'collection_form')">
-        <div class="panel-body">
-            <ng-md-icon icon="add" size="100%"></ng-md-icon>
-        </div>
-        <div class="panel-footer text-center">
-            Add a New Collection
-        </div>
-    </a>
+    <ul class="dynamic-grid" angular-grid="collection_list" grid-width="250" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false" >
+        <li data-ng-repeat="collection in collection_list" class="grid">
+            <div class="collection-data">
+                <div class="img" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
+                    <img ng-src="{{app_datapath}}/data/images/{{collection.bg_img}}" class="grid-img" />
+                </div>
+                <div class="info">
+                    <span class="name h4" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
+                        {{collection.name}}
+                    </span>
+                    <div class="actions pull-right">
+                        <a><ng-md-icon icon="edit" size="18"></ng-md-icon></a>
+                        <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a>
+                    </div>
+                    <div class="keywords">
+                        <span ng-repeat="kw in collection.keywords">{{kw}}</span>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="grid add-collection" ng-click="change_subscreen('collection_list', 'collection_form')">
+            <ng-md-icon icon="add"></ng-md-icon>
+            <span class="h5">Add a New Collection</span>
+        </li>
+    </ul>
 </div>

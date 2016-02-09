@@ -94,56 +94,56 @@ gf-sidebar{
 .collection-list{
     margin-left: 58px;
 }
-    .collection-list .panel{
-        position: relative;
-        width: 180px;
-        height: 230px;
-        float: left;
-        margin-right: 15px;
-        text-decoration: none;
+    .collection-list .add-collection{
+        padding: 20px;
         cursor: pointer;
     }
-        .collection-list .panel ng-md-icon{
-            fill: #dfdfdf;
+        .collection-list .add-collection ng-md-icon{
+            fill: #999;
+            position: relative;
+            bottom:-4px;
         }
-            .collection-list .panel:hover ng-md-icon{
-                fill: #ccc;
-            }
-        .collection-list .panel.collection-panel .panel-body {
-            height: 100%;
-            text-align: center;
-            white-space: nowrap;
+        .collection-list .add-collection .h5{
+            color: #888;
         }
-
-            .collection-list .panel .panel-body .img-center{
-                display: inline-block;
-                height: 100%;
-                vertical-align: middle;
-            }
-            .collection-list .panel .panel-body img{
-                vertical-align: middle;
-                max-width: 100%;
-                max-height: 100%;
-                margin: auto;
-            }
-        .collection-list .panel .panel-footer, .collection-list .panel .panel-heading{
-            position: absolute;
-            opacity: 0.9;
-            width: 100%;
+        .collection-list .add-collection:hover .h5{
+            color: #666;
+        }
+    .collection-list .collection-data .info{
+        padding: 15px;
+    }
+        .collection-list .collection-data .info .name{
+            color: #777;
+            cursor: pointer;
+        }
+        .collection-list .collection-data .info:hover .name{
             color: #555;
         }
-        .collection-list .panel .panel-footer{
-            bottom: 0;
+        .collection-list .collection-data .info .keywords{
+            margin-top: 10px;
         }
-        .collection-list .panel .panel-heading{
-            background-color: rgba(0, 0, 0, 0);
-            top: 0;
-        }
-
-            .collection-list .panel:hover .panel-footer, .collection-list .panel:hover .panel-heading{
-                color: #111;
+            .collection-list .collection-data .info .keywords span{
+                background-color: #eee;
+                color:#888;
+                padding: 5px;
+                margin-right: 5px;
             }
-
+        .collection-list .collection-data .info .actions{
+            margin-top: 5px;
+        }
+            .collection-list .collection-data .info .actions ng-md-icon{
+                fill: #ccc;
+            }
+            .collection-list .collection-data .info .actions ng-md-icon:hover{
+                fill: #999;
+            }
+    .collection-list .collection-data .img{
+        cursor: pointer;
+        opacity: 0.9;
+    }
+        .collection-list .collection-data .img:hover{
+            opacity: 1;
+        }
 
 /* Collection Form */
 .collection-form-wrap, .card-form-wrap{
@@ -152,12 +152,12 @@ gf-sidebar{
 }
 
 .file-input {
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
+	width   : 0.1px;
+	height  : 0.1px;
+	opacity : 0;
 	overflow: hidden;
 	position: absolute;
-	z-index: -1;
+	z-index : -1;
 }
 
 .file-input-lbl{
@@ -173,23 +173,38 @@ gf-sidebar{
 }
 
 /* Card List */
-.card-list-header .collection-logo img{
-    width: 50px;
+.card-list-header .collection-logo{
+    height: 51px;
     margin-bottom: -5px;
 }
+    .card-list-header .collection-logo img{
+        max-width : 100px;
+        max-height: 100%;
+    }
 .card-list-header .collection-info .kw{
     background-color:#eee;
-    margin-right: 3px;
-    color: #999;
-    padding: 4px;
-    font-size: 12px;
-    border-radius: 2px;
+    margin-right    : 3px;
+    color           : #999;
+    padding         : 4px;
+    font-size       : 12px;
+    border-radius   : 2px;
 }
-.card-list-header .collection-edit, .card-list-header .collection-add-card{
-    fill: #e5e5e5;
+.card-list-header .collection-action{
     position: relative;
     bottom:-7px;
 }
+    .card-list-header .collection-action ng-md-icon{
+        fill: #ccc;
+    }
+        .card-list-header .collection-action ng-md-icon:hover{
+            fill: #999;
+        }
+.card-list-body .card-data .actions ng-md-icon{
+    fill: #ccc;
+}
+    .card-list-body .card-data .actions ng-md-icon:hover{
+        fill: #999;
+    }
 
 /* jstag */
 .jt-editor{

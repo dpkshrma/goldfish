@@ -7,12 +7,12 @@
             <span class="h4">{{card_list.collection.name}}</span><br />
             <span class="kw" ng-repeat="kw in card_list.collection.keywords">{{kw}}</span>
         </li>
-        <li class="collection-edit">
+        <li class="collection-action">
             <a ng-click="change_subscreen('card_list', 'card_form')" title="Edit Collection Info">
                 <ng-md-icon icon="edit"></ng-md-icon>
             </a>
         </li>
-        <li class="collection-add-card">
+        <li class="collection-action">
             <a ng-click="change_subscreen('card_list', 'card_form')" title="Add a card">
                 <ng-md-icon icon="add"></ng-md-icon>
             </a>
@@ -25,6 +25,28 @@
         No Cards to display.
     </div>
     <div ng-if="check_list()">
-        {{card_list.cards}}
+        <ul class="dynamic-grid" angular-grid="card_list" grid-width="300" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false">
+            <li data-ng-repeat="card in card_list.cards" class="grid">
+                <div class="card-data">
+                    <div class="img" ng-if="card.media">
+                        <img ng-src="{{app_datapath}}/data/images/{{card.media}}" class="grid-img" />
+                    </div>
+                    <div class="info" style="padding: 10px; font-size: 20px">
+                        <div class="actions pull-right">
+                            <a><ng-md-icon icon="edit" size="18"></ng-md-icon></a>
+                            <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a>
+                        </div>
+                        <div class="question">
+                            <span class="h2" style="color: #777">Q.</span>
+                            {{card.question}}
+                        </div>
+                        <div class="answer">
+                            <span class="h2" style="color: #777">A.</span>
+                            {{card.answer}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>

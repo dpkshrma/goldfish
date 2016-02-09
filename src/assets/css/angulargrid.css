@@ -1,0 +1,23 @@
+.grid {
+    border: 1px solid #cfcfcf;
+    list-style: none;
+    background: #ffffff;
+    box-sizing: border-box;
+    -moz-box-sizing : border-box;
+    -webkit-transition: all 0.6s ease-out;
+    transition: all 0.6s ease-out;
+}
+.grid-img {
+    width: 100%;
+    vertical-align: middle;
+    -webkit-transition: opacity 0.6s ease-out;
+    transition: opacity 0.6s ease-out;
+    background-color: #fff;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.grid-img.img-loaded{
+    visibility: visible;
+    opacity: 1;
+}

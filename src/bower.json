@@ -26,6 +26,7 @@
     "angular-animate": "~1.4.9",
     "ng-img-crop": "ngImgCrop#~0.3.2",
     "jsTag": "~0.3.6",
-    "ng-img-crop-full-extended": "ngImgCropFullExtended#~0.4.9"
+    "ng-img-crop-full-extended": "ngImgCropFullExtended#~0.4.9",
+    "angulargrid": "~0.4.0"
   }
 }
