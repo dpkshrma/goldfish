@@ -286,7 +286,7 @@
             $scope.flash_toggle_promises[col_id] = promise_obj;
         }
 
-        $scope.confirm_delete = function(input, col_id){
+        $scope.confirm_col_delete = function(input, col_id){
             var collection;
             if (input == true) {
                 // remove collection item from collection_list
@@ -460,7 +460,7 @@
             return ($scope.card_list.hasOwnProperty('cards') && $scope.card_list.cards.length != 0);
         }
 
-        $scope.confirm_delete = function(input, card_id){
+        $scope.confirm_card_delete = function(input, card_id){
             var card;
             if (input == true) {
                 // remove card item from card_list.cards
