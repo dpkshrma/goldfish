@@ -11,7 +11,7 @@
         <li data-ng-repeat="collection in collection_list" class="grid">
             <div class="collection-data">
                 <div class="img" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
-                    <img ng-src="{{app_datapath}}/data/images/{{collection.bg_img}}" class="grid-img" />
+                    <img ng-src="{{app_datapath}}/data/local/images/{{collection.bg_img}}" class="grid-img" />
                 </div>
                 <div class="info">
                     <span class="name h4" ng-click="prepare_card_list(collection) && change_subscreen('collection_list', 'card_list')">
@@ -24,7 +24,7 @@
                             class="switch-custom switch-mini switch-success">
                         </toggle-switch>
                         <a><ng-md-icon icon="edit" size="18"></ng-md-icon></a>
-                        <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a><br />
+                        <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a>
                     </div>
                     <div class="keywords">
                         <span ng-repeat="kw in collection.keywords">{{kw}}</span>

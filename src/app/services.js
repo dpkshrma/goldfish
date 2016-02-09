@@ -1,20 +1,30 @@
 (function(){
 
-    // NeDB
-    var Datastore = require('nedb');
-    var path      = require('path');
-    var fs        = require('fs');
-    var mkdirp    = require('mkdirp');
-    var gui       = require('nw.gui');
+    // NodeJS Modules
+    var Datastore    = require('nedb');
+    var path         = require('path');
+    var fs           = require('fs');
+    var mkdirp       = require('mkdirp');
+    var gui          = require('nw.gui');
 
-    var app       = angular.module('goldfish.services', []);
+    // App data paths
+    var data_path    = {};
+    var img_path     = {};
 
-    var img_dir   = path.join(gui.App.dataPath, 'data/images/');
-    var db        = {};
+    data_path.local  = path.join(gui.App.dataPath, 'data/local/');
+    data_path.remote = path.join(gui.App.dataPath, 'data/remote/');
+    img_path.local   = data_path.local + 'images/';
+    img_path.remote  = data_path.remote + 'images/';
+
+    // Database initialization
+    var db           = {};
 
     db_init(function(db_obj){
         db = db_obj;
     });
+
+    // app services
+    var app          = angular.module('goldfish.services', []);
 
     app.service('gfDB', ['$q', function($q){
         // deferred update
@@ -55,12 +65,12 @@
         return {
             save: function(filename, data){
                 var img = decodeBase64Image(data);
-                mkdirp(img_dir, function(err){
-                    var img_path = img_dir + filename;
-                    if (err) console.log(err);
+                mkdirp(img_path.local, function(err){
+                    if (err) console.error(err);
                     else {
-                        fs.writeFile(img_path, img.data, 'base64', function(err){
-                            if (err) console.log(err);
+                        var file_path = img_path.local + filename;
+                        fs.writeFile(file_path, img.data, 'base64', function(err){
+                            if (err) console.error(err);
                         });
                     }
                 })
@@ -70,7 +80,7 @@
 
     function db_init(callback){
         var db       = {};
-        var db_loc   = path.join(gui.App.dataPath, 'data/');
+        var db_loc   = data_path.local;
         var db_name, db_path;
 
         // get all collection names from collection db
@@ -84,6 +94,8 @@
                 console.error(err);
             }
             else{
+                // create new Datastores for all collection
+                // (which will contain repsective cards)
                 for (var i = 0; i < docs.length; i++) {
                     db_name = "col"+docs[i]._id.toString();
                     db_path = db_loc + db_name + '.db';

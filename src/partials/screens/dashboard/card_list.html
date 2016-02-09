@@ -1,7 +1,7 @@
 <div class="card-list-header">
     <ul class="list-inline">
         <li class="collection-logo">
-            <img class="pull-left" ng-src="{{app_datapath}}/data/images/{{card_list.collection.bg_img}}"/>
+            <img class="pull-left" ng-src="{{app_datapath}}/data/local/images/{{card_list.collection.bg_img}}"/>
         </li>
         <li class="collection-info">
             <span class="h4">{{card_list.collection.name}}</span><br />
@@ -29,7 +29,7 @@
             <li data-ng-repeat="card in card_list.cards" class="grid">
                 <div class="card-data">
                     <div class="img" ng-if="card.media">
-                        <img ng-src="{{app_datapath}}/data/images/{{card.media}}" class="grid-img" />
+                        <img ng-src="{{app_datapath}}/data/local/images/{{card.media}}" class="grid-img" />
                     </div>
                     <div class="info" style="padding: 10px; font-size: 20px">
                         <div class="actions pull-right">

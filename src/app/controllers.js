@@ -313,6 +313,8 @@
                         name      : $scope.active_collection.name,
                         keywords  : $scope.active_collection.keywords.getTagValues(),
                         bg_img    : img_name,
+                        source    : 'local',
+                        flash     : true,
                         created_at: new Date()
                     });
 

@@ -3,10 +3,12 @@ var Model = require('nosql-schema-validator');
 var schema = {
     _id       : Number,
     name      : String,
-    keywords : [{
+    keywords  : [{
         type: String
     }],
     bg_img    : String,
+    source    : String,
+    flash     : Boolean,
     created_at: Date
 };
 
