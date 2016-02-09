@@ -535,6 +535,8 @@
                         // add collection to nedb
                         gfDB.insert_doc(doc, dbname).then(
                             function(new_doc){
+                                // add new doc to card list
+                                $scope.card_list.cards.push(new_doc);
                                 callback(null, img_name, img_data);
                             },
                             function(err){
