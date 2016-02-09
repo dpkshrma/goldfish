@@ -29,10 +29,15 @@
             },
             get_all_docs: function(dbname){
                 var def = $q.defer();
-                db[dbname].find({}, function(err, docs){
-                    if (err) def.reject(err);
-                    else def.resolve(docs);
-                });
+                if (db.hasOwnProperty(dbname)) {
+                    db[dbname].find({}, function(err, docs){
+                        if (err) def.reject(err);
+                        else def.resolve(docs);
+                    });
+                }
+                else{
+                    def.reject(dbname+' not in db');
+                }
                 return def.promise;
             },
             get_latest_doc: function(dbname){
