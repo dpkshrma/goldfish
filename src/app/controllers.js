@@ -321,9 +321,12 @@
                         created_at: new Date()
                     });
 
-                    // add collection to nedb
+                    // add collection to collections.db
                     gfDB.insert_doc(doc, dbname).then(
                         function(new_doc){
+                            // create new collection db for storing cards
+                            var dbname = 'col' + new_doc._id.toString();
+                            gfDB.create_db(dbname);
                             callback(null, img_name, img_data, new_doc);
                         },
                         function(err){

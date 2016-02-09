@@ -1,11 +1,11 @@
 (function(){
 
     // NodeJS Modules
-    var Datastore    = require('nedb');
-    var path         = require('path');
-    var fs           = require('fs');
-    var mkdirp       = require('mkdirp');
-    var gui          = require('nw.gui');
+    var Datastore = require('nedb');
+    var path      = require('path');
+    var fs        = require('fs');
+    var mkdirp    = require('mkdirp');
+    var gui       = require('nw.gui');
 
     // App data paths
     var data_path    = {};
@@ -17,14 +17,14 @@
     img_path.remote  = data_path.remote + 'images/';
 
     // Database initialization
-    var db           = {};
+    var db = {};
 
     db_init(function(db_obj){
         db = db_obj;
     });
 
     // app services
-    var app          = angular.module('goldfish.services', []);
+    var app = angular.module('goldfish.services', []);
 
     app.service('gfDB', ['$q', function($q){
         // deferred update
@@ -57,6 +57,13 @@
                     else def.resolve(docs);
                 });
                 return def.promise;
+            },
+            create_db: function(dbname){
+                var new_db_path = data_path.local + dbname + '.db';
+                db[dbname] = new Datastore({
+                    filename: new_db_path,
+                    autoload: true
+                });
             }
         };
     }]);
@@ -97,10 +104,10 @@
                 // create new Datastores for all collection
                 // (which will contain repsective cards)
                 for (var i = 0; i < docs.length; i++) {
-                    db_name = "col"+docs[i]._id.toString();
-                    db_path = db_loc + db_name + '.db';
+                    db_name = "col" + docs[i]._id.toString();
+                    new_db_path = db_loc + db_name + '.db';
                     db[db_name] = new Datastore({
-                        filename: db_path,
+                        filename: new_db_path,
                         autoload: true
                     });
                 }
