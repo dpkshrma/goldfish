@@ -21,3 +21,38 @@
     visibility: visible;
     opacity: 1;
 }
+
+/* delete dialog */
+.grid .delete_dialog{
+    background-color: rgba(255,255,255,0.8);
+    z-index: 105;
+    text-align: center;
+}
+
+.grid .delete_dialog,
+.grid .delete_dialog .header{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+.grid .delete_dialog .header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+    .grid .delete_dialog .header h3{
+        color: #696969;
+    }
+    .grid .delete_dialog .header ng-md-icon{
+        fill: #E47D6D;
+        margin-bottom: -10px;
+    }
+    .grid .delete_dialog .btn-group{
+        position: absolute;
+        bottom: 0;
+    }
+        .grid .delete_dialog .btn-group .btn-danger{
+            background-color: #E47D6D !important;
+        }

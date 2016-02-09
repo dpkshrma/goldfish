@@ -455,9 +455,36 @@
     }]);
 
     // Dashboard Screen : Card List
-    app.controller('dashboardCardListCtrl', ['$scope', function($scope){
+    app.controller('dashboardCardListCtrl', ['$scope', 'gfDB', 'fsService', function($scope, gfDB, fsService){
         $scope.check_list = function(){
             return ($scope.card_list.hasOwnProperty('cards') && $scope.card_list.cards.length != 0);
+        }
+
+        $scope.confirm_delete = function(input, card_id){
+            var card;
+            if (input == true) {
+                // remove card item from card_list.cards
+                for (var i = 0; i < $scope.card_list.cards.length; i++) {
+                    card = $scope.card_list.cards[i];
+                    if (card._id == card_id) {
+                        // remove card from card_list scope
+                        $scope.card_list.cards.splice(i, 1);
+
+                        // delete card record from col{id}.db
+                        var query   = {_id: card._id},
+                            options = {},
+                            dbname  = 'col' + $scope.card_list.collection._id;
+                        gfDB.remove_doc(query, options, dbname);
+
+                        if (card.media.length > 0) {
+                            // delete card media
+                            var dir_path = fsService.data_path.local + 'images/';
+                            fsService.delete_files([card.media], dir_path);
+                        }
+                        break;
+                    }
+                }
+            }
         }
     }]);
 
@@ -557,18 +584,14 @@
                         console.error(err);
                     }
                     // clear collection form
-                    clear_form();
+                    $scope.active_card.question = '';
+                    $scope.active_card.answer   = '';
+                    $scope.active_card.media    = '';
                 });
             }
 
             return true;
         };
-
-        var clear_form = function(){
-            $scope.active_card.question = '';
-            $scope.active_card.answer   = '';
-            $scope.active_card.media    = '';
-        }
 
     }]);
 

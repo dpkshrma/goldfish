@@ -28,13 +28,27 @@
         <ul class="dynamic-grid" angular-grid="card_list" grid-width="300" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false">
             <li data-ng-repeat="card in card_list.cards" class="grid">
                 <div class="card-data">
+                    <div class="delete_dialog" ng-if="card.show_delete_dialog">
+                        <div class="header">
+                            <ng-md-icon icon="delete" size="40"></ng-md-icon>
+                            <h3>Sure?</h3>
+                        </div>
+                        <div class="btn-group btn-group-justified">
+                            <a class="btn btn-danger" ng-click="confirm_delete(true, card._id)">Yes</a>
+                            <a class="btn btn-default" ng-click="card.show_delete_dialog = false">No</a>
+                        </div>
+                    </div>
                     <div class="img" ng-if="card.media">
                         <img ng-src="{{app_datapath}}/data/local/images/{{card.media}}" class="grid-img" />
                     </div>
                     <div class="info" style="padding: 10px; font-size: 20px">
                         <div class="actions pull-right">
-                            <a><ng-md-icon icon="edit" size="18"></ng-md-icon></a>
-                            <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a>
+                            <a title="Edit Card">
+                                <ng-md-icon icon="edit" size="18"></ng-md-icon>
+                            </a>
+                            <a ng-click="card.show_delete_dialog = true" title="Delete Card">
+                                <ng-md-icon icon="delete" size="19"></ng-md-icon>
+                            </a>
                         </div>
                         <div class="question">
                             <span class="h2" style="color: #777">Q.</span>
