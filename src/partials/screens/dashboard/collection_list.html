@@ -18,8 +18,13 @@
                         {{collection.name}}
                     </span>
                     <div class="actions pull-right">
+                        <toggle-switch
+                            ng-model="switchStatus"
+                            knob-label=""
+                            class="switch-custom switch-mini switch-success">
+                        </toggle-switch>
                         <a><ng-md-icon icon="edit" size="18"></ng-md-icon></a>
-                        <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a>
+                        <a><ng-md-icon icon="delete" size="19"></ng-md-icon></a><br />
                     </div>
                     <div class="keywords">
                         <span ng-repeat="kw in collection.keywords">{{kw}}</span>

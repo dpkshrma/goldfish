@@ -131,6 +131,10 @@ gf-sidebar{
         .collection-list .collection-data .info .actions{
             margin-top: 5px;
         }
+            .collection-list .collection-data .info .actions .switch-custom{
+                margin-bottom: 12px;
+                min-width: 50px;
+            }
             .collection-list .collection-data .info .actions ng-md-icon{
                 fill: #ccc;
             }

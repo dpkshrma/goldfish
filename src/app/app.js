@@ -1,6 +1,6 @@
 (function(){
     'use strict';
-    var app = angular.module('goldfish', ['ngRoute', 'ngMdIcons', 'ui.bootstrap', 'angularGrid', 'goldfish.controllers', 'goldfish.directives']);
+    var app = angular.module('goldfish', ['ngRoute', 'ngMdIcons', 'ui.bootstrap', 'angularGrid', 'toggle-switch', 'goldfish.controllers', 'goldfish.directives']);
     app.config(['$routeProvider',function($routeProvider) {
         $routeProvider.
             when('/', {
