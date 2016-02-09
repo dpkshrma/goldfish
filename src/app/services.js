@@ -42,7 +42,16 @@
                 // validation checks on args
                 db[dbname].update(query, update, options, function(err, numReplaced){
                     if (err) return def.reject(err);
-                    else def.resolve;
+                    else def.resolve(numReplaced);
+                });
+                return def.promise;
+            },
+            remove_doc: function(query, options, dbname){
+                var def = $q.defer();
+                // validation checks on args
+                db[dbname].remove(query, options, function(err, numRemoved){
+                    if (err) return def.reject(err);
+                    else def.resolve(numRemoved);
                 });
                 return def.promise;
             },
@@ -73,8 +82,27 @@
                     filename: new_db_path,
                     autoload: true
                 });
+            },
+            delete_db: function(dbname){
+                var cur_db_path = data_path.local + dbname + '.db';
+                // remove from global db
+                delete db[dbname];
+                // delete the collection file
+                fs.unlink(cur_db_path);
             }
         };
+    }]);
+
+
+    app.service('fsService', [function(){
+        return {
+            data_path   : data_path,
+            delete_files: function(filenames, dir_path){
+                for (var i = 0; i < filenames.length; i++) {
+                    fs.unlink(dir_path + filenames[i]);
+                }
+            }
+        }
     }]);
 
     app.service('ImageService', ['$q', function($q){

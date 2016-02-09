@@ -223,7 +223,7 @@
     }]);
 
     // Dashboard Screen : Collection List
-    app.controller('dashboardCollectionListCtrl', ['$scope', 'gfDB', '$timeout', function($scope, gfDB, $timeout){
+    app.controller('dashboardCollectionListCtrl', ['$scope', 'gfDB', '$timeout', 'fsService', function($scope, gfDB, $timeout, fsService){
         var init = function(){
             $scope.flash_toggle_promises = {};
             $scope.collection_list = [];
@@ -284,6 +284,49 @@
 
             // flash toggle timeout initialized
             $scope.flash_toggle_promises[col_id] = promise_obj;
+        }
+
+        $scope.confirm_delete = function(input, col_id){
+            var collection;
+            if (input == true) {
+                // remove collection item from collection_list
+                for (var i = 0; i < $scope.collection_list.length; i++) {
+                    collection = $scope.collection_list[i];
+                    if (collection._id == col_id) {
+                        // remove collection from collection_list scope
+                        $scope.collection_list.splice(i, 1);
+
+                        // delete collection record from collection.db
+                        var query = {_id: collection._id},
+                            options = {},
+                            dbname = 'collections';
+                        gfDB.remove_doc(query, options, dbname);
+
+                        var tbd_files = []; // to be deleted
+
+                        // get collection media
+                        tbd_files.push(collection.bg_img);
+
+                        // get collection cards media
+                        gfDB.get_all_docs('col'+collection._id.toString()).then(
+                            function(docs){
+                                for (var i = 0; i < docs.length; i++) {
+                                    var doc = docs[i];
+                                    tbd_files.push(doc.media);
+                                }
+                                // delete all files
+                                var dir_path = fsService.data_path.local + 'images/';
+                                fsService.delete_files(tbd_files, dir_path);
+                            }
+                        )
+
+                        // delete col{id}.db (i.e. collection cards)
+                        dbname = 'col'+collection._id.toString()
+                        gfDB.delete_db(dbname);
+                        break;
+                    }
+                }
+            }
         }
     }]);
 
