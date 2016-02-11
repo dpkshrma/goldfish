@@ -27,7 +27,7 @@
     <div ng-if="check_list()">
         <ul class="dynamic-grid" angular-grid="card_list" grid-width="300" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false">
             <li data-ng-repeat="card in card_list.cards" class="grid">
-                <div class="card-data">
+                <div class="card-data" ng-init="card.reveal_ans = false; card.show_alert = false">
                     <div class="delete_dialog" ng-if="card.show_delete_dialog">
                         <div class="header">
                             <ng-md-icon icon="delete" size="40"></ng-md-icon>
@@ -43,10 +43,13 @@
                     </div>
                     <div class="info" style="padding: 10px; font-size: 20px">
                         <div class="actions pull-right">
-                            <a title="Edit Card">
+                            <a style="text-decoration: none" title="Card Scheduled">
+                                <ng-md-icon icon="timer" size="18"></ng-md-icon>
+                            </a>
+                            <a style="text-decoration: none" title="Edit Card">
                                 <ng-md-icon icon="edit" size="18"></ng-md-icon>
                             </a>
-                            <a ng-click="card.show_delete_dialog = true" title="Delete Card">
+                            <a style="text-decoration: none" ng-click="card.show_delete_dialog = true" title="Delete Card">
                                 <ng-md-icon icon="delete" size="19"></ng-md-icon>
                             </a>
                         </div>
@@ -55,8 +58,37 @@
                             {{card.question}}
                         </div>
                         <div class="answer">
-                            <span class="h2" style="color: #777">A.</span>
-                            {{card.answer}}
+                            <div class="input-group">
+                                <span class="input-group-addon h2" style="color: #777; padding: 0; padding-right: 2px; font-size: 42px">A.</span>
+                                <span class="correct-ans" ng-if="card.reveal_ans">{{card.answer}}</span>
+                                <input type="text" class="form-control" placeholder="type in answer you remember.." ng-model="card.inpt_ans" ng-if="!card.reveal_ans"/>
+                            </div>
+                            <div class="btn-group btn-group-justified" ng-if="!card.reveal_ans">
+                                <a class="btn btn-default" ng-click='schedule_flash(card, true)'>
+                                    Submit
+                                </a>
+                                <a class="btn btn-default" ng-click='schedule_flash(card, false)'>
+                                    Reveal
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alerts">
+                        <div class="alert alert-info" ng-show="show_alert['info']">
+                            <strong>Alright!</strong>
+                            Flash card scheduled for {{card.schedule_time}} from now. GoodDay :)
+                        </div>
+                        <div class="alert alert-success" ng-show="show_alert['correct']">
+                            <strong>That's correct!</strong><br />
+                            Flash card scheduled for {{card.schedule_time}} from now. GoodDay :)
+                        </div>
+                        <div class="alert alert-warning" ng-show="show_alert['partial']">
+                            <strong>Almost Correct!</strong><br />
+                            Flash card scheduled for {{card.schedule_time}} from now. GoodDay :)
+                        </div>
+                        <div class="alert alert-danger" ng-show="show_alert['incorrect']">
+                            <strong>Oops.. Thats not the right answer!</strong><br />
+                            Scheduling flash card {{card.schedule_time}} day from now... GoodDay :)
                         </div>
                     </div>
                 </div>

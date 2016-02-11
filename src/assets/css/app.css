@@ -213,6 +213,23 @@ gf-sidebar{
     .card-list-body .card-data .actions ng-md-icon:hover{
         fill: #999;
     }
+.card-list-body .card-data .alerts .alert{
+    margin: 0;
+    border-radius: 0;
+}
+    .card-list-body .card-data .alerts .alert.alert-info{
+        background-color: rgba(79, 147, 244, 0.8);
+    }
+    .card-list-body .card-data .alerts .alert.alert-success{
+        background-color: rgba(15, 157, 55, 0.7);
+    }
+    .card-list-body .card-data .alerts .alert.alert-warning{
+        background-color: rgba(255, 152, 0, 0.7);
+    }
+    .card-list-body .card-data .alerts .alert.alert-danger{
+        background-color: rgba(229, 28, 35, 0.7);
+    }
+
 
 /* jstag */
 .jt-editor{

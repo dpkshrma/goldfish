@@ -455,9 +455,23 @@
     }]);
 
     // Dashboard Screen : Card List
-    app.controller('dashboardCardListCtrl', ['$scope', 'gfDB', 'fsService', function($scope, gfDB, fsService){
+    app.controller('dashboardCardListCtrl', ['$scope', 'gfDB', 'fsService', '$timeout', function($scope, gfDB, fsService, $timeout){
         $scope.check_list = function(){
             return ($scope.card_list.hasOwnProperty('cards') && $scope.card_list.cards.length != 0);
+        }
+
+        $scope.schedule_flash = function(card, answered){
+            // if user has submitted any answer
+            if (answered) {
+                
+            }
+        }
+
+        $scope.toast_alert = function(card){
+            card.show_alert = true;
+            $timeout(function(card){
+                card.show_alert = false;
+            }, 5000, true, card);
         }
 
         $scope.confirm_card_delete = function(input, card_id){

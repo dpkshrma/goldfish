@@ -46,7 +46,7 @@
         color: #696969;
     }
     .grid .delete_dialog .header ng-md-icon{
-        fill: #E47D6D;
+        fill: rgba(229, 28, 35, 0.7);
         margin-bottom: -10px;
     }
     .grid .delete_dialog .btn-group{
@@ -54,5 +54,5 @@
         bottom: 0;
     }
         .grid .delete_dialog .btn-group .btn-danger{
-            background-color: #E47D6D !important;
+            background-color: rgba(229, 28, 35, 0.7);
         }
