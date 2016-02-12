@@ -3,6 +3,7 @@
     var gui   = require('nw.gui');
     var path  = require('path');
     var async = require('async');
+    var srs   = require('./app/srs');
 
     // Models
     var Card       = require('./app/models/card');
@@ -463,8 +464,24 @@
         $scope.schedule_flash = function(card, answered){
             // if user has submitted any answer
             if (answered) {
-                
+
             }
+        }
+
+        $scope.check_answer = function(card){
+            // input answer accuracy
+            var result = srs.similar_text(card.inpt_ans, card.answer);
+            sim = result.similarity;
+
+            // real time progress bar update
+            if(sim<20)
+                card.pbar_status = 'progress-bar-danger'
+            else if(sim>=20 && sim<80 )
+                card.pbar_status = 'progress-bar-warning'
+            else
+                card.pbar_status = 'progress-bar-success'
+
+            card.progress_width = sim+'%';
         }
 
         $scope.toast_alert = function(card){
