@@ -76,6 +76,12 @@
                 });
                 return def.promise;
             },
+            get_db: function(dbname){
+                if (db.hasOwnProperty(dbname)){
+                    return db[dbname];
+                }
+                return null;
+            },
             create_db: function(dbname){
                 var new_db_path = data_path.local + dbname + '.db';
                 db[dbname] = new Datastore({
@@ -90,6 +96,102 @@
                 // delete the collection file
                 fs.unlink(cur_db_path);
             }
+        };
+    }]);
+
+    // spaced repetition system
+    app.service('srs', ['$q', function($q){
+        var similarity_measures = ['levenshtein'];
+        var similar_text = function(str1, str2, algo){
+            var def = $q.defer();
+            // default text similarity algo
+            if (typeof algo === 'undefined') {
+                algo = 'levenshtein';
+            }
+            // levenshtein edit distance
+            if (algo === 'levenshtein') {
+                var lev = require('./app/srs/similar_text/levenshtein');
+                def.resolve(lev(str1, str2));
+            }
+            return def.promise;
+        }
+
+        var schedule_job = function(card, collection, sim){
+            var d = new Date();
+            var def = $q.defer()
+            var Job = require('./app/models/job');
+
+            if (!sim) sim = 0;
+            // convert sim to 1 to 5 scale
+            sim = sim/20;
+
+            // (every job has id of the form {col_id.card_id})
+            var job_id = collection._id + '.' + card._id;
+
+            // check if a job for the card exists
+            db['jobs'].findOne({_id: job_id}, function(err, job){
+                var target_date = new Date();
+                if (job){
+                    var new_job_interval, new_efactor;
+                    if (job.iteration == 1){
+                        new_job_interval = 6;
+                        new_efactor      = job.efactor;
+                    }
+                    else{
+                        // algo
+                        new_efactor = job.efactor + (0.1-(5-sim)*(0.08+(5-sim)*0.02));
+
+                        if (new_efactor < 1.3) new_efactor = 1.3;
+                        else if(new_efactor > 2.5) new_efactor = 2.5;
+
+                        new_job_interval = Math.round(job.interval*new_efactor);
+                    }
+
+                    target_date.setDate(d.getDate() + new_job_interval);
+                    db['jobs'].update(
+                        {
+                            _id: job_id
+                        },
+                        {
+                            $set: {
+                                scheduled_at: target_date,
+                                iteration   : job.iteration + 1,
+                                interval    : new_job_interval,
+                                efactor     : new_efactor
+                            }
+                        },
+                        {},
+                        function(err, numReplaced){
+                            if (err) def.reject(err);
+                            else def.resolve(target_date);
+                        }
+                    );
+                }
+                else{
+                    // else create new job
+                    target_date.setDate(d.getDate()+1);
+                    var job = new Job({
+                        _id          : job_id,
+                        collection_id: collection._id,
+                        card_id      : card._id,
+                        scheduled_at : target_date,
+                        interval     : 1,
+                        iteration    : 1,
+                        efactor      : 1.3,
+                        created_at   : d
+                    });
+                    db['jobs'].insert(job, function(err){
+                        if (err) def.reject(err);
+                        else def.resolve(target_date);
+                    });
+                }
+            });
+            return def.promise;
+        }
+
+        return {
+            similar_text: similar_text,
+            schedule_job: schedule_job
         };
     }]);
 
@@ -133,6 +235,12 @@
             autoload: true
         });
 
+        // flash cards schedules db
+        var jobs_db = new Datastore({
+            filename: db_loc+'jobs.db',
+            autoload: true
+        });
+
         collection_db.find({}, function(err, docs){
             if (err) {
                 console.error(err);
@@ -149,6 +257,7 @@
                     });
                 }
                 db['collections'] = collection_db;
+                db['jobs'] = jobs_db;
                 callback(db);
             }
         });

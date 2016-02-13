@@ -1,9 +1,13 @@
 var Model = require('nosql-schema-validator');
 
-var job = {
-    _id          : Number,
+var schema = {
+    _id          : String,
     collection_id: Number,
     card_id      : Number,
+    scheduled_at : Date,
+    interval     : Number,
+    iteration    : Number,
+    efactor      : Number,
     created_at   : Date
 };
 

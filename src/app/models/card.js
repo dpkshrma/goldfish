@@ -2,14 +2,16 @@ var Model = require('nosql-schema-validator');
 
 var schema = {
     _id        : Number,
-    collection: {
-        id  : Number,
-        name: String
+    collection : {
+        id   : Number,
+        name : String
     },
-    created_at: Date,
-    question  : String,
-    answer    : String,
-    media     : String
+    created_at : Date,
+    question   : String,
+    answer     : String,
+    media      : String,
+    repetitions: Number,
+    postponed  : Number
 };
 
 var card = function(data){

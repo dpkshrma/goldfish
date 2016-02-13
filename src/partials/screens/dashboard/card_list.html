@@ -47,7 +47,7 @@
                         }
                     </style>
                     <div class="progress" style="margin:0; height: 3px;">
-                        <div class="progress-bar progress-bar-danger" ng-class="card.pbar_status" ng-style="{'width': card.progress_width}" style="height: 3px;"></div>
+                        <div class="progress-bar progress-bar-danger" ng-class="card.pbar_status" ng-style="{'width': card.result+'%'}" style="height: 3px;"></div>
                     </div>
                     <div class="info" style="padding: 10px; font-size: 20px">
                         <div class="actions pull-right">
@@ -81,20 +81,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="alerts">
-                        <div class="alert alert-info" ng-show="show_alert['info']">
+                    <div class="alerts" ng-show="card.show_alert">
+                        <div class="alert alert-info" ng-show="card.alert_type == 'info'">
                             <strong>Alright!</strong>
                             Flash card scheduled {{card.schedule_time}} from now. GoodDay :)
                         </div>
-                        <div class="alert alert-success" ng-show="show_alert['correct']">
+                        <div class="alert alert-success" ng-show="card.alert_type == 'correct'">
                             <strong>That's correct!</strong><br />
                             Flash card scheduled {{card.schedule_time}} from now. GoodDay :)
                         </div>
-                        <div class="alert alert-warning" ng-show="show_alert['partial']">
+                        <div class="alert alert-warning" ng-show="card.alert_type == 'partial'">
                             <strong>Almost Correct!</strong><br />
                             Flash card scheduled {{card.schedule_time}} from now. GoodDay :)
                         </div>
-                        <div class="alert alert-danger" ng-show="show_alert['incorrect']">
+                        <div class="alert alert-danger" ng-show="card.alert_type == 'incorrect'">
                             <strong>Oops.. Thats not the right answer!</strong><br />
                             Scheduling flash card {{card.schedule_time}} from now... GoodDay :)
                         </div>

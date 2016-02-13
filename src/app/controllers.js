@@ -3,7 +3,6 @@
     var gui   = require('nw.gui');
     var path  = require('path');
     var async = require('async');
-    var srs   = require('./app/srs');
 
     // Models
     var Card       = require('./app/models/card');
@@ -456,32 +455,56 @@
     }]);
 
     // Dashboard Screen : Card List
-    app.controller('dashboardCardListCtrl', ['$scope', 'gfDB', 'fsService', '$timeout', function($scope, gfDB, fsService, $timeout){
+    app.controller('dashboardCardListCtrl', ['$scope', 'gfDB', 'fsService', 'srs', '$timeout', function($scope, gfDB, fsService, srs, $timeout){
         $scope.check_list = function(){
             return ($scope.card_list.hasOwnProperty('cards') && $scope.card_list.cards.length != 0);
         }
 
         $scope.schedule_flash = function(card, answered){
-            // if user has submitted any answer
-            if (answered) {
-
+            var sim = 0;
+            card.alert_type = 'info'
+            if (answered && card.inpt_ans){
+                sim = card.result;
+                if(sim<20)
+                    card.alert_type = 'incorrect';
+                else if(sim>=20 && sim<80 )
+                    card.alert_type = 'partial';
+                else
+                    card.alert_type = 'correct';
             }
+
+            srs.schedule_job(card, $scope.card_list.collection, sim).then(
+                function(scheduled_at){
+                    card.schedule_time = scheduled_at;
+                    card.show_alert = true;
+                    card.reveal_ans = true;
+                },
+                function(err){
+                    console.error(err);
+                }
+            )
         }
 
         $scope.check_answer = function(card){
             // input answer accuracy
-            var result = srs.similar_text(card.inpt_ans, card.answer);
-            sim = result.similarity;
+            srs.similar_text(card.inpt_ans, card.answer, 'levenshtein').then(
+                function(result){
+                    sim = result.similarity;
 
-            // real time progress bar update
-            if(sim<20)
-                card.pbar_status = 'progress-bar-danger'
-            else if(sim>=20 && sim<80 )
-                card.pbar_status = 'progress-bar-warning'
-            else
-                card.pbar_status = 'progress-bar-success'
+                    // real time progress bar update
+                    if(sim<20)
+                    card.pbar_status = 'progress-bar-danger'
+                    else if(sim>=20 && sim<80 )
+                    card.pbar_status = 'progress-bar-warning'
+                    else
+                    card.pbar_status = 'progress-bar-success'
 
-            card.progress_width = sim+'%';
+                    card.result = sim
+                },
+                function(err){
+                    console.error(err);
+                }
+            )
         }
 
         $scope.toast_alert = function(card){
