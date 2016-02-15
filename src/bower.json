@@ -28,6 +28,7 @@
     "jsTag": "~0.3.6",
     "ng-img-crop-full-extended": "ngImgCropFullExtended#~0.4.9",
     "angulargrid": "~0.4.0",
-    "angular-ui-switch": "~0.1.1"
+    "angular-ui-switch": "~0.1.1",
+    "angular-moment": "^0.10.3"
   }
 }

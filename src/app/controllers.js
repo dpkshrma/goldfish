@@ -460,6 +460,30 @@
             return ($scope.card_list.hasOwnProperty('cards') && $scope.card_list.cards.length != 0);
         }
 
+        // check if flash card if scheduled for today
+        $scope.is_scheduled_today = function(card){
+            if (card.scheduled_at) {
+                var today = new Date();
+                var scheduled_date = card.scheduled_at.toDateString();
+                if (today.toDateString() === scheduled_date)
+                    return true;
+            }
+            return false;
+        }
+
+        $scope.get_schedule_info = function(card){
+            if (card.scheduled_at) {
+                // convert schedule time using moment
+                var moment_time;
+                if (card.scheduled_at.toDateString() === new Date().toDateString())
+                    moment_time = 'for today';
+                else
+                    moment_time = moment(card.scheduled_at).from(new Date());
+                return "Scheduled " + moment_time;
+            }
+            return "Not scheduled yet";
+        }
+
         $scope.schedule_flash = function(card, answered){
             var sim = 0;
             card.alert_type = 'info'
@@ -475,7 +499,7 @@
 
             srs.schedule_job(card, $scope.card_list.collection, sim).then(
                 function(scheduled_at){
-                    card.schedule_time = scheduled_at;
+                    card.scheduled_at = scheduled_at;
                     card.show_alert = true;
                     $timeout(function(card){
                         card.show_alert = false;

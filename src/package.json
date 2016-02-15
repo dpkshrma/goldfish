@@ -22,6 +22,7 @@
     "auto-launch": "^1.1.1",
     "gulp": "^3.9.0",
     "mkdirp": "^0.5.1",
+    "moment": "^2.11.2",
     "nedb": "^1.7.2",
     "nosql-schema-validator": "^0.1.2"
   },
