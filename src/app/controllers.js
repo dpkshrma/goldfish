@@ -477,6 +477,9 @@
                 function(scheduled_at){
                     card.schedule_time = scheduled_at;
                     card.show_alert = true;
+                    $timeout(function(card){
+                        card.show_alert = false;
+                    }, 3000, true, card);
                     card.reveal_ans = true;
                 },
                 function(err){
@@ -493,11 +496,11 @@
 
                     // real time progress bar update
                     if(sim<20)
-                    card.pbar_status = 'progress-bar-danger'
+                        card.pbar_status = 'progress-bar-danger'
                     else if(sim>=20 && sim<80 )
-                    card.pbar_status = 'progress-bar-warning'
+                        card.pbar_status = 'progress-bar-warning'
                     else
-                    card.pbar_status = 'progress-bar-success'
+                        card.pbar_status = 'progress-bar-success'
 
                     card.result = sim
                 },
@@ -505,13 +508,6 @@
                     console.error(err);
                 }
             )
-        }
-
-        $scope.toast_alert = function(card){
-            card.show_alert = true;
-            $timeout(function(card){
-                card.show_alert = false;
-            }, 5000, true, card);
         }
 
         $scope.confirm_card_delete = function(input, card_id){

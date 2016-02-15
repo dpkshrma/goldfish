@@ -182,6 +182,28 @@
                             else def.resolve(target_date);
                         }
                     );
+
+                    // add job in job history db
+                    var job_id = collection._id + '.' + card._id;
+                    db['job_history'].update(
+                        { _id: job_id },
+                        {
+                            $push: {
+                                jobs:{
+                                    iteration   : card.iteration + 1,
+                                    interval    : new_job_interval,
+                                    sim_score   : sim,
+                                    efactor     : new_efactor,
+                                    answered_on : new Date(),
+                                    scheduled_at: target_date
+                                }
+                            }
+                        },
+                        { upsert: true },
+                        function(err){
+                            // new job created
+                        }
+                    );
                 }
             });
             return def.promise;
