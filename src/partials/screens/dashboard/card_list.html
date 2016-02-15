@@ -20,14 +20,6 @@
     </ul>
 </div>
 <hr>
-<style media="screen">
-    .progress-bar-danger:last-child.progress-bar:before{
-        opacity: .5;
-    }
-    .info .actions .scheduled ng-md-icon{
-        fill: rgba(79, 147, 244, 0.8);
-    }
-</style>
 <div class="card-list-body">
     <div ng-if="!check_list()">
         No Cards to display.
@@ -35,7 +27,7 @@
     <div ng-if="check_list()">
         <ul class="dynamic-grid" angular-grid="card_list" grid-width="300" gutter-size="10" angular-grid-id="gallery" refresh-on-img-load="false">
             <li data-ng-repeat="card in card_list.cards" class="grid">
-                <div class="card-data" ng-init="card.reveal_ans = false; card.show_alert = false">
+                <div class="card-data" ng-init="card.show_alert = false">
                     <div class="delete_dialog" ng-if="card.show_delete_dialog">
                         <div class="header">
                             <ng-md-icon icon="delete" size="40"></ng-md-icon>
@@ -49,32 +41,32 @@
                     <div class="img" ng-if="card.media">
                         <img ng-src="{{app_datapath}}/data/local/images/{{card.media}}" class="grid-img" />
                     </div>
-                    <div class="progress" ng-if="!card.scheduled_at || is_scheduled_today(card)" style="margin:0; height: 3px;">
-                        <div class="progress-bar progress-bar-danger" ng-class="card.pbar_status" ng-style="{'width': card.result+'%'}" style="height: 3px;"></div>
+                    <div class="progress" ng-if="!card.scheduled_at || is_scheduled_today(card)">
+                        <div class="progress-bar progress-bar-danger" ng-class="card.pbar_status" ng-style="{'width': card.result+'%'}"></div>
                     </div>
-                    <div class="info" style="padding: 10px; font-size: 20px">
+                    <div class="info">
                         <div class="actions pull-right">
-                            <a class="schedule-info" uib-popover="{{ get_schedule_info(card) }}" popover-placement="bottom" popover-trigger="mouseenter" ng-class="{scheduled: card.scheduled_at}" style="text-decoration: none">
+                            <a class="schedule-info" uib-popover="{{ get_schedule_info(card) }}" popover-placement="bottom" popover-trigger="mouseenter" ng-class="{scheduled: card.scheduled_at}">
                                 <ng-md-icon icon="timer" size="18"></ng-md-icon>
                             </a>
-                            <a class="edit" style="text-decoration: none" title="Edit Card">
+                            <a class="edit" title="Edit Card">
                                 <ng-md-icon icon="edit" size="18"></ng-md-icon>
                             </a>
-                            <a class="delete" style="text-decoration: none" ng-click="card.show_delete_dialog = true" title="Delete Card">
+                            <a class="delete" ng-click="card.show_delete_dialog = true" title="Delete Card">
                                 <ng-md-icon icon="delete" size="19"></ng-md-icon>
                             </a>
                         </div>
                         <div class="question">
-                            <span class="h2" style="color: #777">Q.</span>
+                            <span class="h2">Q.</span>
                             {{card.question}}
                         </div>
                         <div class="answer">
                             <div class="input-group">
-                                <span class="input-group-addon h2" style="color: #777; padding: 0 2px; font-size: 42px">A.</span>
+                                <span class="input-group-addon h2">A.</span>
                                 <!-- if card is not scheduled(ie, new card) OR card is scheduled for today -->
                                 <input type="text" class="form-control" placeholder="type in answer you remember.." ng-model="card.inpt_ans" ng-if="!card.scheduled_at || is_scheduled_today(card)" ng-change='check_answer(card)'/>
                                 <!-- else if card is scheduled for a later date -->
-                                <span class="correct-ans" style="position: absolute; padding-left: 4px; bottom: 0;" ng-if="card.scheduled_at && !is_scheduled_today(card)">{{card.answer}}</span>
+                                <span class="correct-ans" ng-if="card.scheduled_at && !is_scheduled_today(card)">{{card.answer}}</span>
                             </div>
                             <div class="btn-group btn-group-justified" ng-if="!card.scheduled_at || is_scheduled_today(card)">
                                 <a class="btn btn-default" ng-click='schedule_flash(card, true)'>

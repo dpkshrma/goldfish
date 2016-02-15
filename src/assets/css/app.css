@@ -207,12 +207,50 @@ gf-sidebar{
         .card-list-header .collection-action ng-md-icon:hover{
             fill: #999;
         }
-.card-list-body .card-data .actions ng-md-icon{
-    fill: #ccc;
+
+
+.card-list-body .card-data .progress{
+    margin:0;
+    height: 3px;
 }
-    .card-list-body .card-data .actions ng-md-icon:hover{
-        fill: #999;
+    .card-list-body .card-data .progress .progress-bar{
+        height: 3px;
     }
+    .card-list-body .card-data .progress .progress-bar-danger:last-child.progress-bar:before{
+        opacity: .5;
+    }
+
+.card-list-body .card-data .info{
+    padding: 10px;
+    font-size: 20px;
+}
+    .card-list-body .card-data .info .actions a{
+        text-decoration: none;
+    }
+        .card-list-body .card-data .info .actions a.scheduled ng-md-icon{
+            fill: rgba(79, 147, 244, 0.8);
+        }
+    .card-list-body .card-data .info .actions ng-md-icon{
+        fill: #ccc;
+    }
+        .card-list-body .card-data .info .actions ng-md-icon:hover{
+            fill: #999;
+        }
+    .card-list-body .card-data .info .question .h2{
+        color: #777;
+    }
+    .card-list-body .card-data .info .answer .h2{
+        color: #777;
+        padding: 0 2px;
+        font-size: 42px;
+    }
+    .card-list-body .card-data .info .answer .correct-ans{
+        position: absolute;
+        padding-left: 4px;
+        bottom: 0;
+    }
+
+
 .card-list-body .card-data .alerts .alert{
     margin: 0;
     border-radius: 0;
