@@ -204,6 +204,22 @@
                             // new job created
                         }
                     );
+
+                    // create an active job
+                    var Active_job = require('./app/models/active_job')
+                    var active_job = new Active_job({
+                        collection_id: collection._id,
+                        card_id      : card._id,
+                        scheduled_at : target_date
+                    });
+                    db['active_job'].update(
+                        { _id: job_id },
+                        { $set: active_job },
+                        { upsert: true },
+                        function(err){
+                            // new active job
+                        }
+                    );
                 }
             });
             return def.promise;
@@ -256,8 +272,14 @@
         });
 
         // job history db
-        var job_db = new Datastore({
+        var job_history_db = new Datastore({
             filename: db_loc+'job_history.db',
+            autoload: true
+        });
+
+        // active job db
+        var active_job_db = new Datastore({
+            filename: db_loc+'active_job.db',
             autoload: true
         });
 
@@ -277,7 +299,8 @@
                     });
                 }
                 db['collections'] = collection_db;
-                db['job_history'] = job_db;
+                db['job_history'] = job_history_db;
+                db['active_job']  = active_job_db;
                 callback(db);
             }
         });
