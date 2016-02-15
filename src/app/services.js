@@ -55,6 +55,16 @@
                 });
                 return def.promise;
             },
+            find_docs: function(query){
+                var def = $q.defer();
+                if (db.hasOwnProperty(dbname)) {
+                    db[dbname].find(query, function(err, docs){
+                        if (err) def.reject(err);
+                        else def.resolve(docs);
+                    })
+                }
+                return def.promise;
+            },
             get_all_docs: function(dbname){
                 var def = $q.defer();
                 if (db.hasOwnProperty(dbname)) {
@@ -118,44 +128,50 @@
 
         var schedule_job = function(card, collection, sim){
             var d = new Date();
-            var def = $q.defer()
-            var Job = require('./app/models/job');
+            var def = $q.defer();
 
             if (!sim) sim = 0;
             // convert sim to 1 to 5 scale
             sim = sim/20;
 
-            // (every job has id of the form {col_id.card_id})
-            var job_id = collection._id + '.' + card._id;
+            var dbname = 'col'+collection._id;
 
-            // check if a job for the card exists
-            db['jobs'].findOne({_id: job_id}, function(err, job){
-                var target_date = new Date();
-                if (job){
+            db[dbname].findOne({_id: card._id}, function(err, card){
+                if (err){
+                    def.reject(err);
+                }
+                else{
                     var new_job_interval, new_efactor;
-                    if (job.iteration == 1){
+                    var target_date = new Date();
+
+                    if (!card.hasOwnProperty('iteration')) {
+                        new_job_interval = 1;
+                        new_efactor      = 1.3;
+                        card.iteration   = 0;
+                    }
+                    else if (card.iteration == 1){
                         new_job_interval = 6;
-                        new_efactor      = job.efactor;
+                        new_efactor      = card.efactor;
                     }
                     else{
                         // algo
-                        new_efactor = job.efactor + (0.1-(5-sim)*(0.08+(5-sim)*0.02));
+                        new_efactor = card.efactor + (0.1-(5-sim)*(0.08+(5-sim)*0.02));
 
                         if (new_efactor < 1.3) new_efactor = 1.3;
                         else if(new_efactor > 2.5) new_efactor = 2.5;
 
-                        new_job_interval = Math.round(job.interval*new_efactor);
+                        new_job_interval = Math.round(card.interval*new_efactor);
                     }
 
                     target_date.setDate(d.getDate() + new_job_interval);
-                    db['jobs'].update(
+                    db[dbname].update(
                         {
-                            _id: job_id
+                            _id: card._id
                         },
                         {
                             $set: {
                                 scheduled_at: target_date,
-                                iteration   : job.iteration + 1,
+                                iteration   : card.iteration + 1,
                                 interval    : new_job_interval,
                                 efactor     : new_efactor
                             }
@@ -166,24 +182,6 @@
                             else def.resolve(target_date);
                         }
                     );
-                }
-                else{
-                    // else create new job
-                    target_date.setDate(d.getDate()+1);
-                    var job = new Job({
-                        _id          : job_id,
-                        collection_id: collection._id,
-                        card_id      : card._id,
-                        scheduled_at : target_date,
-                        interval     : 1,
-                        iteration    : 1,
-                        efactor      : 1.3,
-                        created_at   : d
-                    });
-                    db['jobs'].insert(job, function(err){
-                        if (err) def.reject(err);
-                        else def.resolve(target_date);
-                    });
                 }
             });
             return def.promise;
@@ -235,9 +233,9 @@
             autoload: true
         });
 
-        // flash cards schedules db
-        var jobs_db = new Datastore({
-            filename: db_loc+'jobs.db',
+        // job history db
+        var job_db = new Datastore({
+            filename: db_loc+'job_history.db',
             autoload: true
         });
 
@@ -257,7 +255,7 @@
                     });
                 }
                 db['collections'] = collection_db;
-                db['jobs'] = jobs_db;
+                db['job_history'] = job_db;
                 callback(db);
             }
         });
