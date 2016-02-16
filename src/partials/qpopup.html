@@ -1,3 +1,121 @@
-<div class="screen">
-<span>Stuff</span>
+<style media="screen">
+    .popup-wrap{
+        color: #777;
+    }
+    .img img{
+        width: 100%;
+        overflow: hidden;
+        -webkit-app-region: drag;
+    }
+    .data{
+        border: 1px solid #ddd;
+    }
+        .data .container{
+            margin-bottom: 20px;
+        }
+
+    .info{
+        background-color: #eee;
+        -webkit-app-region: drag;
+    }
+        .info .col-md-12{
+            padding-left: 0;
+        }
+        .info .collection{
+            background-color: #9AB8D7;
+            font-size: 17px;
+            line-height: 1.5;
+            color: #fff;
+            height: 27px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .info .arrow-right{
+            width: 0;
+        	height: 0;
+        	border-top: 13px solid transparent;
+        	border-bottom: 13px solid transparent;
+        	border-left: 13px solid #9AB8D7;
+        }
+        .info .counter{
+            color: #aaa;
+            font-size: 15px;
+        }
+
+    .options a ng-md-icon{
+        fill: #999;
+    }
+        .options a:hover ng-md-icon{
+            fill: #777;
+        }
+    .question-wrap{
+        position: relative;
+        margin-bottom: 5px;
+    }
+        .question-wrap .question{
+            font-size: 20px;
+        }
+    .answer .h2{
+        padding: 0 2px;
+        font-size: 42px;
+    }
+    .answer .correct-answer{
+        font-size: 20px;
+        position: absolute;
+        padding-left: 4px;
+        bottom: 0;
+    }
+</style>
+<div class="popup-wrap">
+    <div class="img">
+        <img ng-if="img_src" ng-src="{{img_src}}"/>
+    </div>
+    <div class="data">
+        <div class="container">
+            <div class="row info">
+                <div class="col-md-12">
+                    <div class="collection pull-left">Colname</div>
+                    <div class="arrow-right pull-left"></div>
+                    <span class="counter pull-right">1 0f 24</span>
+                </div>
+            </div>
+            <div class="row question-wrap">
+                <div class="col-md-12 question">
+                    <span class="h2">Q.</span>
+                    Some question?? Some question?? Some question??
+                </div>
+            </div>
+            <div class="row answer-wrap">
+                <div class="col-md-12 answer">
+                    <div class="input-group">
+                        <span class="input-group-addon h2">A.</span>
+                        <input type="text" class="form-control" placeholder="type in answer you remember.." ng-model="input_answer"/>
+                        <!-- <span class="correct-answer">Some answer</span> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="answer-btns btn-group btn-group-justified">
+            <a class="btn btn-default">
+                Submit
+            </a>
+            <a class="btn btn-default">
+                Reveal
+            </a>
+            <div class="btn-group dropup" uib-dropdown>
+                <button id="split-button" type="button" class="btn btn-default">Later</button>
+                <button type="button" class="btn btn-default" uib-dropdown-toggle>
+                    <span class="caret"></span>
+                </button>
+                <ul uib-dropdown-menu role="menu" aria-labelledby="split-button" style="min-width: 98px">
+                    <li role="menuitem"><a href="#">5min</a></li>
+                    <li role="menuitem"><a href="#">10mins</a></li>
+                    <li role="menuitem"><a href="#">1hr</a></li>
+                    <li class="divider"></li>
+                    <li role="menuitem"><a href="#">Cancel</a></li>
+                    <li role="menuitem"><a href="#">Cancel All</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
