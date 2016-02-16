@@ -1,77 +1,8 @@
-<style media="screen">
-    .popup-wrap{
-        color: #777;
-    }
-    .img img{
-        width: 100%;
-        overflow: hidden;
-        -webkit-app-region: drag;
-    }
-    .data{
-        border: 1px solid #ddd;
-        border-top: none;
-    }
-        .data .container{
-            margin-bottom: 20px;
-        }
-
-    .info{
-        background-color: #eee;
-        -webkit-app-region: drag;
-    }
-        .info .col-md-12{
-            padding-left: 0;
-        }
-        .info .collection{
-            background-color: #9AB8D7;
-            font-size: 17px;
-            line-height: 1.5;
-            color: #fff;
-            height: 27px;
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-        .info .arrow-right{
-            width: 0;
-        	height: 0;
-        	border-top: 13px solid transparent;
-        	border-bottom: 13px solid transparent;
-        	border-left: 13px solid #9AB8D7;
-        }
-        .info .counter{
-            color: #aaa;
-            font-size: 15px;
-        }
-
-    .options a ng-md-icon{
-        fill: #999;
-    }
-        .options a:hover ng-md-icon{
-            fill: #777;
-        }
-    .question-wrap{
-        position: relative;
-        margin-bottom: 5px;
-    }
-        .question-wrap .question{
-            font-size: 20px;
-        }
-    .answer .h2{
-        padding: 0 2px;
-        font-size: 42px;
-    }
-    .answer .correct-answer{
-        font-size: 20px;
-        position: absolute;
-        padding-left: 4px;
-        bottom: 0;
-    }
-</style>
 <div class="popup-wrap">
-    <div class="img">
+    <div class="popup-img">
         <img ng-if="img_src" ng-src="{{img_src}}" ele-load="on_image_load($event)"/>
     </div>
-    <div class="data">
+    <div class="popup" ng-init="show_alert=false;show_btns=true">
         <div class="container">
             <div class="row info">
                 <div class="col-md-12">
@@ -79,6 +10,9 @@
                     <div class="arrow-right pull-left"></div>
                     <span class="counter pull-right">1 0f 24</span>
                 </div>
+            </div>
+            <div class="row progress">
+                <div class="progress-bar" ng-style="{'width': card.result+'%'}"></div>
             </div>
             <div class="row question-wrap">
                 <div class="col-md-12 question">
@@ -96,8 +30,8 @@
                 </div>
             </div>
         </div>
-        <div class="answer-btns btn-group btn-group-justified">
-            <a class="btn btn-default">
+        <div class="answer-btns btn-group btn-group-justified" ng-show="show_btns">
+            <a class="btn btn-default" ng-click="submit()">
                 Submit
             </a>
             <a class="btn btn-default">
@@ -117,6 +51,24 @@
                     <li role="menuitem"><a href="#">Cancel All</a></li>
                 </ul>
             </div>
+        </div>
+        <div class="alerts" ng-show="show_alert">
+            <!-- <div class="alert alert-info">
+                <strong>Alright!</strong><br />
+                Flash card scheduled <span am-time-ago="card.scheduled_at"></span> from now. GoodDay :)
+            </div> -->
+            <div class="alert alert-success">
+                <strong>That's correct!</strong><br />
+                Flash card scheduled _____ from now. GoodDay :)
+            </div>
+            <!-- <div class="alert alert-warning">
+                <strong>Almost Correct!</strong><br />
+                Flash card scheduled <span am-time-ago="card.scheduled_at"></span> from now. GoodDay :)
+            </div>
+            <div class="alert alert-danger">
+                <strong>Oops.. Thats not the right answer!</strong><br />
+                Scheduling flash card <span am-time-ago="card.scheduled_at"></span> from now... GoodDay :)
+            </div> -->
         </div>
     </div>
 </div>

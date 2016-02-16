@@ -686,7 +686,7 @@
     // Qpopup Ctrl
     app.controller('qpopupCtrl', ['$scope', function($scope){
         $scope.win = gui.Window.get();
-        $scope.img_src = "/home/codebump/.config/goldfish/data/local/images/1455035021317.png";
+        $scope.img_src = "/home/codebump/.config/goldfish/data/local/images/1455029860835.png";
 
         /**
          * Jugaad
@@ -697,22 +697,42 @@
          */
         // TODO: find a better way to this jugaad
         $scope.$on('$viewContentLoaded', function(){
-            resize_win();
+            $scope.resize_win();
         });
 
         $scope.on_image_load = function(event){
-            resize_win();
+            $scope.resize_win();
         };
 
-        var resize_win = function(){
+        $scope.resize_win = function(){
             var popup = document.getElementsByClassName('popup-wrap')[0];
             var h = popup.offsetHeight;
             $scope.win.resizeTo(300, h);
             setTimeout(function(){
                 $scope.win.resizeTo(300, popup.offsetHeight);
+                $scope.set_win_position();
             }, 10);
         }
+
+        // TODO: make window position user editable
+        $scope.set_win_position = function(){
+            var popup = document.getElementsByClassName('popup-wrap')[0];
+            var h = popup.offsetHeight;
+            var w = popup.offsetWidth;
+            var x = screen.width - w;
+            var y = screen.height - h - 30;
+            $scope.win.moveTo(x, y);
+        }
         // Jugaad ends here
+
+        $scope.submit = function(){
+            // store results and schedule new flash card
+            $scope.show_btns=false;
+            $scope.show_alert=true;
+            setTimeout(function(){
+                $scope.resize_win();
+            }, 50);
+        }
     }]);
 
 })();
