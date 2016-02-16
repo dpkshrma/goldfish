@@ -9,6 +9,7 @@
     }
     .data{
         border: 1px solid #ddd;
+        border-top: none;
     }
         .data .container{
             margin-bottom: 20px;
@@ -68,7 +69,7 @@
 </style>
 <div class="popup-wrap">
     <div class="img">
-        <img ng-if="img_src" ng-src="{{img_src}}"/>
+        <img ng-if="img_src" ng-src="{{img_src}}" ele-load="on_image_load($event)"/>
     </div>
     <div class="data">
         <div class="container">

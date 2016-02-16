@@ -127,7 +127,7 @@
         }
 
         $scope.win_close = function(){
-            $scope.main_window.close();
+            $scope.main_window.hide();
         }
     }]);
 
@@ -143,14 +143,19 @@
             $rootScope.qpopup = gui.Window.open(
                 'index.html#/qpopup',
                 {
-                    title     : 'GoldFish Options',
+                    frame     : false,
                     toolbar   : false,
-                    max_width : 300,
-                    max_height: 500,
-                    focus     : true
+                    max_width : 400,
+                    max_height: 700,
+                    focus     : true,
+                    show      : true
                 }
             );
         };
+
+        $scope.popup_devtools = function(){
+            $scope.qpopup.showDevTools();
+        }
 
         $scope.show_devtools = function(){
             $scope.main_window.showDevTools();
@@ -504,7 +509,6 @@
                     $timeout(function(card){
                         card.show_alert = false;
                     }, 3000, true, card);
-                    card.reveal_ans = true;
                 },
                 function(err){
                     console.error(err);
@@ -681,7 +685,34 @@
 
     // Qpopup Ctrl
     app.controller('qpopupCtrl', ['$scope', function($scope){
-        // pass
+        $scope.win = gui.Window.get();
+        $scope.img_src = "/home/codebump/.config/goldfish/data/local/images/1455035021317.png";
+
+        /**
+         * Jugaad
+         * when all content is loaded, window is resized to contain the contents
+         * if content is loaded(text only), on_image_load is not called.
+         * setTimeout is required for correct height of the element, and for
+         * some reason that won't work unless window is previously resized
+         */
+        // TODO: find a better way to this jugaad
+        $scope.$on('$viewContentLoaded', function(){
+            resize_win();
+        });
+
+        $scope.on_image_load = function(event){
+            resize_win();
+        };
+
+        var resize_win = function(){
+            var popup = document.getElementsByClassName('popup-wrap')[0];
+            var h = popup.offsetHeight;
+            $scope.win.resizeTo(300, h);
+            setTimeout(function(){
+                $scope.win.resizeTo(300, popup.offsetHeight);
+            }, 10);
+        }
+        // Jugaad ends here
     }]);
 
 })();

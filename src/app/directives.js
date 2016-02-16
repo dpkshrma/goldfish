@@ -82,4 +82,19 @@
         };
     });
 
+    // element load
+    app.directive('eleLoad', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, elem, attrs){
+                var fn = $parse(attrs.eleLoad);
+                elem.bind('load', function(event){
+                    scope.$apply(function(){
+                        fn(scope, { $event: event });
+                    });
+                });
+            }
+        };
+    }]);
+
 })();
