@@ -17,11 +17,7 @@
     img_path.remote  = data_path.remote + 'images/';
 
     // Database initialization
-    var db = {};
-
-    db_init(function(db_obj){
-        db = db_obj;
-    });
+    db_init();
 
     // app services
     var app = angular.module('goldfish.services', []);
@@ -31,7 +27,7 @@
         return {
             insert_doc: function(doc, dbname){
                 var def = $q.defer();
-                db[dbname].insert(doc, function(err, newDoc){
+                global.db[dbname].insert(doc, function(err, newDoc){
                     if (err) return def.reject(err);
                     else def.resolve(newDoc);
                 });
@@ -40,7 +36,7 @@
             update_doc: function(query, update, options, dbname){
                 var def = $q.defer();
                 // validation checks on args
-                db[dbname].update(query, update, options, function(err, numReplaced){
+                global.db[dbname].update(query, update, options, function(err, numReplaced){
                     if (err) return def.reject(err);
                     else def.resolve(numReplaced);
                 });
@@ -49,16 +45,16 @@
             remove_doc: function(query, options, dbname){
                 var def = $q.defer();
                 // validation checks on args
-                db[dbname].remove(query, options, function(err, numRemoved){
+                global.db[dbname].remove(query, options, function(err, numRemoved){
                     if (err) return def.reject(err);
                     else def.resolve(numRemoved);
                 });
                 return def.promise;
             },
-            find_docs: function(query){
+            find_docs: function(query, dbname){
                 var def = $q.defer();
-                if (db.hasOwnProperty(dbname)) {
-                    db[dbname].find(query, function(err, docs){
+                if (global.db.hasOwnProperty(dbname)) {
+                    global.db[dbname].find(query, function(err, docs){
                         if (err) def.reject(err);
                         else def.resolve(docs);
                     })
@@ -67,8 +63,8 @@
             },
             get_all_docs: function(dbname){
                 var def = $q.defer();
-                if (db.hasOwnProperty(dbname)) {
-                    db[dbname].find({}, function(err, docs){
+                if (global.db.hasOwnProperty(dbname)) {
+                    global.db[dbname].find({}, function(err, docs){
                         if (err) def.reject(err);
                         else def.resolve(docs);
                     });
@@ -80,21 +76,21 @@
             },
             get_latest_doc: function(dbname){
                 var def = $q.defer();
-                db[dbname].find({}).sort({_id:-1}).limit(1).exec(function(err, docs){
+                global.db[dbname].find({}).sort({_id:-1}).limit(1).exec(function(err, docs){
                     if (err) def.reject(err);
                     else def.resolve(docs);
                 });
                 return def.promise;
             },
             get_db: function(dbname){
-                if (db.hasOwnProperty(dbname)){
-                    return db[dbname];
+                if (global.db.hasOwnProperty(dbname)){
+                    return global.db[dbname];
                 }
                 return null;
             },
             create_db: function(dbname){
                 var new_db_path = data_path.local + dbname + '.db';
-                db[dbname] = new Datastore({
+                global.db[dbname] = new Datastore({
                     filename: new_db_path,
                     autoload: true
                 });
@@ -102,7 +98,7 @@
             delete_db: function(dbname){
                 var cur_db_path = data_path.local + dbname + '.db';
                 // remove from global db
-                delete db[dbname];
+                delete global.db[dbname];
                 // delete the collection file
                 fs.unlink(cur_db_path);
             }
@@ -136,7 +132,7 @@
 
             var dbname = 'col'+collection._id;
 
-            db[dbname].findOne({_id: card._id}, function(err, card){
+            global.db[dbname].findOne({_id: card._id}, function(err, card){
                 if (err){
                     def.reject(err);
                 }
@@ -164,7 +160,7 @@
                     }
 
                     target_date.setDate(d.getDate() + new_job_interval);
-                    db[dbname].update(
+                    global.db[dbname].update(
                         {
                             _id: card._id
                         },
@@ -185,7 +181,7 @@
 
                     // add job in job history db
                     var job_id = collection._id + '.' + card._id;
-                    db['job_history'].update(
+                    global.db['job_history'].update(
                         { _id: job_id },
                         {
                             $push: {
@@ -212,7 +208,7 @@
                         card_id       : card._id,
                         scheduled_date: target_date.toDateString()
                     });
-                    db['active_job'].update(
+                    global.db['active_jobs'].update(
                         { _id: job_id },
                         { $set: active_job },
                         { upsert: true },
@@ -261,7 +257,7 @@
     }])
 
     function db_init(callback){
-        var db       = {};
+        global.db       = {};
         var db_loc   = data_path.local;
         var db_name, db_path;
 
@@ -278,8 +274,8 @@
         });
 
         // active job db
-        var active_job_db = new Datastore({
-            filename: db_loc+'active_job.db',
+        var active_jobs_db = new Datastore({
+            filename: db_loc+'active_jobs.db',
             autoload: true
         });
 
@@ -293,17 +289,17 @@
                 for (var i = 0; i < docs.length; i++) {
                     db_name = "col" + docs[i]._id.toString();
                     new_db_path = db_loc + db_name + '.db';
-                    db[db_name] = new Datastore({
+                    global.db[db_name] = new Datastore({
                         filename: new_db_path,
                         autoload: true
                     });
                 }
-                db['collections'] = collection_db;
-                db['job_history'] = job_history_db;
-                db['active_job']  = active_job_db;
-                callback(db);
             }
         });
+
+        global.db['collections'] = collection_db;
+        global.db['job_history'] = job_history_db;
+        global.db['active_jobs']  = active_jobs_db;
     }
 
     function decodeBase64Image(dataString) {
