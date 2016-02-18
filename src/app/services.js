@@ -208,9 +208,9 @@
                     // create an active job
                     var Active_job = require('./app/models/active_job')
                     var active_job = new Active_job({
-                        collection_id: collection._id,
-                        card_id      : card._id,
-                        scheduled_at : target_date
+                        collection_id : collection._id,
+                        card_id       : card._id,
+                        scheduled_date: target_date.toDateString()
                     });
                     db['active_job'].update(
                         { _id: job_id },
