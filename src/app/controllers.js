@@ -23,7 +23,6 @@
             $rootScope.main_window = main_window;
             $scope.main_window.maximize();
             $scope.main_window.show();
-            // $scope.main_window.showDevTools();
         }
 
         // Check if tray icon exists
@@ -684,7 +683,7 @@
     /*****************************/
 
     // Qpopup Ctrl
-    app.controller('qpopupCtrl', ['$scope', function($scope){
+    app.controller('qpopupCtrl', ['$scope', 'srs', function($scope, srs){
         $scope.win = gui.Window.get();
         $scope.img_src = "/home/codebump/.config/goldfish/data/local/images/1455029860835.png";
 
@@ -720,15 +719,36 @@
             var h = popup.offsetHeight;
             var w = popup.offsetWidth;
             var x = screen.width - w;
-            var y = screen.height - h - 30;
+            var y = screen.height - h - 31;
             $scope.win.moveTo(x, y);
         }
         // Jugaad ends here
 
+        $scope.check_answer = function(){
+            // input answer accuracy
+            srs.similar_text($scope.input_answer, 'answer', 'levenshtein').then(
+                function(result){
+                    $scope.result = result.similarity;
+
+                    // real time progress bar update
+                    if($scope.result<20)
+                        $scope.pbar_status = 'progress-bar-danger';
+                    else if($scope.result>=20 && $scope.result<80)
+                        $scope.pbar_status = 'progress-bar-warning';
+                    else
+                        $scope.pbar_status = 'progress-bar-success';
+                },
+                function(err){
+                    console.error(err);
+                }
+            )
+        }
+
         $scope.submit = function(){
             // store results and schedule new flash card
             $scope.show_btns=false;
-            $scope.show_alert=true;
+            $scope.alert_type='partial';
+
             setTimeout(function(){
                 $scope.resize_win();
             }, 50);
