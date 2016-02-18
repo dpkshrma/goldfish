@@ -1,27 +1,27 @@
 .popup-wrap{
     color: #777;
 }
-.popup-img img{
+.popup-wrap .popup-img img{
     width: 100%;
     overflow: hidden;
     -webkit-app-region: drag;
 }
-.popup{
+.popup-wrap .popup{
     border: 1px solid #ddd;
     border-top: none;
 }
-    .popup .container{
+    .popup-wrap .popup .container{
         margin-bottom: 20px;
     }
 
-.info{
+.popup-wrap .info{
     background-color: #eee;
     -webkit-app-region: drag;
 }
-    .info .col-md-12{
+    .popup-wrap .info .col-md-12{
         padding-left: 0;
     }
-    .info .collection{
+    .popup-wrap .info .collection{
         background-color: #9AB8D7;
         font-size: 17px;
         line-height: 1.5;
@@ -30,47 +30,47 @@
         padding-left: 15px;
         padding-right: 15px;
     }
-    .info .arrow-right{
+    .popup-wrap .info .arrow-right{
         width: 0;
         height: 0;
         border-top: 13px solid transparent;
         border-bottom: 13px solid transparent;
         border-left: 13px solid #9AB8D7;
     }
-    .info .counter{
+    .popup-wrap .info .counter{
         color: #aaa;
         font-size: 15px;
     }
-.progress, .progress .progress-bar{
+.popup-wrap .progress, .progress .progress-bar{
     height: 2px;
     margin-bottom: 7px;
 }
-.options a ng-md-icon{
+.popup-wrap .options a ng-md-icon{
     fill: #999;
 }
-    .options a:hover ng-md-icon{
+    .popup-wrap .options a:hover ng-md-icon{
         fill: #777;
     }
-.question-wrap{
+.popup-wrap .question-wrap{
     position: relative;
     margin-bottom: 5px;
 }
-    .question-wrap .question{
+    .popup-wrap .question-wrap .question{
         font-size: 20px;
     }
-.answer .h2{
+.popup-wrap .answer .h2{
     padding: 0 2px;
     font-size: 42px;
 }
-.answer .correct-answer{
+.popup-wrap .answer .correct-answer{
     font-size: 20px;
     position: absolute;
     padding-left: 4px;
     bottom: 0;
 }
-.alerts, .alerts .alert{
+.popup-wrap .alerts, .alerts .alert{
     margin: 0;
 }
-    .alerts .alert{
+    .popup-wrap .alerts .alert{
         border-radius: 0;
     }
