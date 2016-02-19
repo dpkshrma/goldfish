@@ -59,6 +59,9 @@
                         else def.resolve(docs);
                     })
                 }
+                else{
+                    def.reject(dbname+' not in db');
+                }
                 return def.promise;
             },
             get_all_docs: function(dbname){
@@ -122,7 +125,7 @@
             return def.promise;
         }
 
-        var schedule_job = function(card, collection, sim){
+        var schedule_job = function(card, collection_id, sim){
             var d = new Date();
             var def = $q.defer();
 
@@ -130,7 +133,7 @@
             // convert sim to 1 to 5 scale
             sim = sim/20;
 
-            var dbname = 'col'+collection._id;
+            var dbname = 'col'+collection_id;
 
             global.db[dbname].findOne({_id: card._id}, function(err, card){
                 if (err){
@@ -180,7 +183,7 @@
                     );
 
                     // add job in job history db
-                    var job_id = collection._id + '.' + card._id;
+                    var job_id = collection_id + '.' + card._id;
                     global.db['job_history'].update(
                         { _id: job_id },
                         {
@@ -204,7 +207,7 @@
                     // create an active job
                     var Active_job = require('./app/models/active_job')
                     var active_job = new Active_job({
-                        collection_id : collection._id,
+                        collection_id : collection_id,
                         card_id       : card._id,
                         scheduled_date: target_date.toDateString()
                     });
@@ -254,10 +257,13 @@
                 })
             }
         };
-    }])
+    }]);
 
-    function db_init(callback){
+    function db_init(){
+        if (global.db) return;
+
         global.db       = {};
+
         var db_loc   = data_path.local;
         var db_name, db_path;
 

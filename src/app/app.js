@@ -25,8 +25,9 @@
                 'templateUrl': 'partials/qpopup.html',
                 'controller': 'qpopupCtrl'
             }).
-            otherwise({
-                redirectTo: '/'
+            when('/hidden',{
+                'templateUrl': 'partials/hidden.html',
+                'controller': 'hiddenWindowCtrl'
             });
     }]);
 })();

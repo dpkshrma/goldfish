@@ -17,36 +17,75 @@
     // Main Window Ctrl
     app.controller('mainWindowCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
         // Check if tray icon exists, if not, create and store in $rootScope
-        if (typeof $scope.main_window === 'undefined') {
-            // Get main_window and add to $rootScope
-            var main_window        = gui.Window.get();
-            $rootScope.main_window = main_window;
-            $scope.main_window.maximize();
-            $scope.main_window.show();
+        if (typeof global.main_window === 'undefined') {
+            // Get main_window and add to global scope
+            global.main_window = gui.Window.get();
+            global.main_window.maximize();
+            // global.main_window.show();
         }
 
         // Check if tray icon exists
-        if (typeof $scope.tray === 'undefined') {
-            // Create and store in $rootScope
-            var tray        = new gui.Tray({ title: 'GoldFish', icon: 'assets/images/goldfish.png' });
-            $rootScope.tray = tray;
+        if (typeof global.tray === 'undefined') {
+            // Create and store in global scope
+            global.tray = new gui.Tray({ title: 'GoldFish', icon: 'assets/images/goldfish.png' });
 
             // Create a menu for tray icon
             var menu      = new gui.Menu();
             var item_home = new gui.MenuItem({
                 type : 'normal',
                 label: 'GoldFish Home',
-                click: function(){ $scope.main_window.show(); }
+                click: function(){
+                    if(typeof global.main_window !== 'undefined'){
+                        global.main_window.show();
+                    }
+                    else{
+                        // FIXME: segfault on trigger after closed main window(alt-f4)
+                        global.main_window = gui.Window.open(
+                            'index.html#/main',
+                            {
+                                frame      : false,
+                                toolbar    : false,
+                                min_width  : 800,
+                                min_height : 500,
+                                transparent: true,
+                                focus      : true,
+                                show       : false
+                            }
+                        );
+                        global.main_window.maximize();
+                    }
+                }
             });
             var item_close = new gui.MenuItem({
                 type : 'normal',
                 label: 'Close',
-                click: function(){ $scope.main_window.close(); }
+                click: function(){
+                    if (typeof global.main_window !== 'undefined')
+                        global.main_window.close();
+                    if (typeof global.main_window !== 'undefined')
+                        global.hidden_window.close();
+                    if (typeof global.main_window !== 'undefined')
+                        global.qpopup_window.close();
+                }
             });
             menu.append(item_home);
             menu.append(item_close);
 
-            $scope.tray.menu = menu;
+            global.tray.menu = menu;
+        }
+
+        if (typeof global.hidden_window === 'undefined') {
+            global.hidden_window = gui.Window.open(
+                'index.html#/hidden',
+                {
+                    frame     : false,
+                    toolbar   : false,
+                    max_width : 400,
+                    max_height: 700,
+                    focus     : true,
+                    show      : false
+                }
+            );
         }
     }]);
 
@@ -116,20 +155,37 @@
         }
 
         $scope.win_minimize = function(){
-            $scope.main_window.minimize();
+            global.main_window.minimize();
         }
 
         $scope.win_maximize = function(){
-            if(!$scope.is_max) $scope.main_window.maximize();
-            else $scope.main_window.unmaximize();
+            if(!$scope.is_max) global.main_window.maximize();
+            else global.main_window.unmaximize();
             $scope.is_max = !$scope.is_max;
         }
 
         $scope.win_close = function(){
-            $scope.main_window.hide();
+            global.main_window.hide();
         }
     }]);
 
+    // Hidden Window Ctrl
+    app.controller('hiddenWindowCtrl', ['$scope', '$timeout', 'gfDB', '$rootScope', function($scope, $timeout, gfDB, $rootScope){
+        // display active flash cards
+        $timeout(function(){
+            global.qpopup_window = gui.Window.open(
+                'index.html#/qpopup',
+                {
+                    frame     : false,
+                    toolbar   : false,
+                    max_width : 400,
+                    max_height: 700,
+                    focus     : true,
+                    show      : false
+                }
+            );
+        }, 500);
+    }]);
 
     /**********************************/
     /* Main Window Screen Controllers */
@@ -139,7 +195,7 @@
     app.controller('homeScreenCtrl', ['$scope', '$rootScope', 'gfDB', function($scope, $rootScope, gfDB){
         // Trigger qpoppup
         $rootScope.trigger_qpopup = function(){
-            $rootScope.qpopup = gui.Window.open(
+            global.qpopup_window = gui.Window.open(
                 'index.html#/qpopup',
                 {
                     frame     : false,
@@ -153,14 +209,17 @@
         };
 
         $scope.popup_devtools = function(){
-            $scope.qpopup.showDevTools();
+            global.qpopup.showDevTools();
+        }
+        $scope.hidden_window_devtools = function(){
+            global.hidden_window.showDevTools();
         }
 
         $scope.show_devtools = function(){
-            $scope.main_window.showDevTools();
+            global.main_window.showDevTools();
         };
         $scope.hide_win = function(){
-            $scope.main_window.hide();
+            global.main_window.hide();
         };
     }]);
 
@@ -501,7 +560,7 @@
                     card.alert_type = 'correct';
             }
 
-            srs.schedule_job(card, $scope.card_list.collection, sim).then(
+            srs.schedule_job(card, $scope.card_list.collection._id, sim).then(
                 function(scheduled_at){
                     card.scheduled_at = scheduled_at;
                     card.show_alert = true;
@@ -683,18 +742,61 @@
     /*****************************/
 
     // Qpopup Ctrl
-    app.controller('qpopupCtrl', ['$scope', 'srs', function($scope, srs){
+    app.controller('qpopupCtrl', ['$scope', 'srs', 'gfDB', '$timeout', function($scope, srs, gfDB, $timeout){
         $scope.win = gui.Window.get();
-        $scope.img_src = "/home/codebump/.config/goldfish/data/local/images/1455029860835.png";
+        // $scope.win.showDevTools();
+        $scope.app_datapath = gui.App.dataPath;
+
+        // get all active jobs
+        gfDB.find_docs({scheduled_date: new Date().toDateString()}, 'active_jobs').then(
+            function(docs){
+                $scope.jobs = docs;
+                if ($scope.jobs.length > 0){
+                    $scope.job_cntr = 0;
+                    $scope.load_new_card();
+                }
+                else{
+                    global.qpopup_window.close();
+                }
+            },
+            function(err){
+                console.error(err);
+            }
+        );
+
+        $scope.load_new_card = function(){
+            if ($scope.job_cntr >= $scope.jobs.length) {
+                global.qpopup_window.close();
+                return;
+            }
+
+            var cur_job         = $scope.jobs[$scope.job_cntr];
+            var dbname          = 'col' + cur_job.collection_id;
+            $scope.input_answer = "";
+            $scope.reveal_ans   = false;
+            $scope.show_btns    = true;
+            $scope.show_alert   = false;
+
+            gfDB.find_docs({_id: cur_job.card_id}, dbname).then(
+                function(docs){
+                    if (docs.length>0) {
+                        $scope.card = docs[0];
+                        $scope.job_cntr += 1;
+                    }
+                },
+                function(err){
+                    console.error(err);
+                }
+            )
+        }
 
         /**
-         * Jugaad
+         * FIXME:
          * when all content is loaded, window is resized to contain the contents
          * if content is loaded(text only), on_image_load is not called.
          * setTimeout is required for correct height of the element, and for
          * some reason that won't work unless window is previously resized
          */
-        // TODO: find a better way to this jugaad
         $scope.$on('$viewContentLoaded', function(){
             $scope.resize_win();
         });
@@ -710,7 +812,8 @@
             setTimeout(function(){
                 $scope.win.resizeTo(300, popup.offsetHeight);
                 $scope.set_win_position();
-            }, 10);
+                global.qpopup_window.show();
+            }, 20);
         }
 
         // TODO: make window position user editable
@@ -722,11 +825,10 @@
             var y = screen.height - h - 31;
             $scope.win.moveTo(x, y);
         }
-        // Jugaad ends here
 
         $scope.check_answer = function(){
             // input answer accuracy
-            srs.similar_text($scope.input_answer, 'answer', 'levenshtein').then(
+            srs.similar_text($scope.input_answer, $scope.card.answer, 'levenshtein').then(
                 function(result){
                     $scope.result = result.similarity;
 
@@ -744,14 +846,45 @@
             )
         }
 
-        $scope.submit = function(){
-            // store results and schedule new flash card
-            $scope.show_btns=false;
-            $scope.alert_type='partial';
+        $scope.submit = function(answered){
+            $scope.show_btns  = false;
+            $scope.reveal_ans = true;
+
+            if (!answered){
+                $scope.alert_type = 'info';
+                $scope.result     = 0;
+            }
+            else if($scope.result<20)
+                $scope.alert_type = 'incorrect';
+            else if($scope.result>=20 && $scope.result<80)
+                $scope.alert_type = 'partial';
+            else
+                $scope.alert_type = 'correct';
 
             setTimeout(function(){
                 $scope.resize_win();
-            }, 50);
+                // store results and schedule new flash card
+                srs.schedule_job($scope.card, $scope.card.collection.id, $scope.result).then(
+                    function(scheduled_at){
+                        $scope.scheduled_at = scheduled_at;
+                        $scope.show_alert = true;
+                        $timeout(function(){
+                            $scope.load_new_card();
+                        },3000);
+                    },
+                    function(err){
+                        console.error(err);
+                    }
+                )
+            }, 20);
+        }
+
+        $scope.later = function(interval){
+            // pass
+        }
+
+        $scope.cancel = function(all){
+            // pass
         }
     }]);
 

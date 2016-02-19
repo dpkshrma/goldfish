@@ -1,14 +1,14 @@
 <div class="popup-wrap">
     <div class="popup-img">
-        <img ng-if="img_src" ng-src="{{img_src}}" ele-load="on_image_load($event)"/>
+        <img ng-if="card.media" ng-src="{{app_datapath}}/data/local/images/{{card.media}}" ele-load="on_image_load($event)"/>
     </div>
     <div class="popup" ng-init="show_alert=false;show_btns=true">
         <div class="container">
             <div class="row info">
                 <div class="col-md-12">
-                    <div class="collection pull-left">Colname</div>
+                    <div class="collection pull-left">{{card.collection.name}}</div>
                     <div class="arrow-right pull-left"></div>
-                    <span class="counter pull-right">1 0f 24</span>
+                    <span class="counter pull-right">{{job_cntr}} 0f {{jobs.length}}</span>
                 </div>
             </div>
             <div class="row progress">
@@ -17,24 +17,25 @@
             <div class="row question-wrap">
                 <div class="col-md-12 question">
                     <span class="h2">Q.</span>
-                    Some question?? Some question?? Some question??
+                    {{card.question}}
                 </div>
             </div>
             <div class="row answer-wrap">
                 <div class="col-md-12 answer">
-                    <div class="input-group">
+                    <span class="h2" ng-show="reveal_ans">A.</span>
+                    <span class="correct-answer" ng-show="reveal_ans">{{card.answer}}</span>
+                    <div class="input-group" ng-hide="reveal_ans">
                         <span class="input-group-addon h2">A.</span>
                         <input type="text" class="form-control" placeholder="type in answer you remember.." ng-model="input_answer" ng-change="check_answer()"/>
-                        <!-- <span class="correct-answer">Some answer</span> -->
                     </div>
                 </div>
             </div>
         </div>
         <div class="answer-btns btn-group btn-group-justified" ng-show="show_btns">
-            <a class="btn btn-default" ng-click="submit()">
+            <a class="btn btn-default" ng-click="submit(true)">
                 Submit
             </a>
-            <a class="btn btn-default">
+            <a class="btn btn-default" ng-click="submit(false)">
                 Reveal
             </a>
             <div class="btn-group dropup" uib-dropdown>
@@ -52,7 +53,7 @@
                 </ul>
             </div>
         </div>
-        <div class="alerts">
+        <div class="alerts" ng-show="show_alert">
             <div class="alert alert-info" ng-show="alert_type == 'info'">
                 <strong>Alright!</strong><br />
                 Flash card scheduled <span am-time-ago="scheduled_at"></span> from now. GoodDay :)

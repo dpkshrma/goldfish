@@ -51,22 +51,20 @@
     .popup-wrap .options a:hover ng-md-icon{
         fill: #777;
     }
-.popup-wrap .question-wrap{
+.popup-wrap .question-wrap, .popup-wrap .answer-wrap{
     position: relative;
     margin-bottom: 5px;
 }
-    .popup-wrap .question-wrap .question{
+    .popup-wrap .question-wrap .question, .popup-wrap .answer-wrap .answer{
         font-size: 20px;
     }
-.popup-wrap .answer .h2{
+        .popup-wrap .answer-wrap .answer .correct-answer{
+            color: rgba(15, 157, 55, 0.7);
+        }
+
+.popup-wrap .answer .input-group .h2{
     padding: 0 2px;
     font-size: 42px;
-}
-.popup-wrap .answer .correct-answer{
-    font-size: 20px;
-    position: absolute;
-    padding-left: 4px;
-    bottom: 0;
 }
 .popup-wrap .alerts, .alerts .alert{
     margin: 0;
@@ -74,3 +72,15 @@
     .popup-wrap .alerts .alert{
         border-radius: 0;
     }
+        .popup-wrap .alerts .alert.alert-info{
+            background-color: rgba(79, 147, 244, 0.8);
+        }
+        .popup-wrap .alerts .alert.alert-success{
+            background-color: rgba(15, 157, 55, 0.7);
+        }
+        .popup-wrap .alerts .alert.alert-warning{
+            background-color: rgba(255, 152, 0, 0.7);
+        }
+        .popup-wrap .alerts .alert.alert-danger{
+            background-color: rgba(229, 28, 35, 0.7);
+        }
