@@ -18,16 +18,16 @@
     app.config(['$routeProvider',function($routeProvider) {
         $routeProvider.
             when('/', {
-                'templateUrl': 'partials/main_window.html',
-                'controller': 'mainWindowCtrl'
+                'templateUrl': 'partials/hidden.html',
+                'controller': 'hiddenWindowCtrl'
             }).
             when('/qpopup',{
                 'templateUrl': 'partials/qpopup.html',
                 'controller': 'qpopupCtrl'
             }).
-            when('/hidden',{
-                'templateUrl': 'partials/hidden.html',
-                'controller': 'hiddenWindowCtrl'
+            when('/main',{
+                'templateUrl': 'partials/main_window.html',
+                'controller': 'mainWindowCtrl'
             });
     }]);
 })();

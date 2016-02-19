@@ -10,24 +10,66 @@
 
     var app = angular.module('goldfish.controllers', ['goldfish.services', 'jsTag', 'ui.bootstrap', 'ngImgCrop']);
 
-    /***************************/
-    /* Main Window Controllers */
-    /***************************/
+    // Hidden Window Ctrl
+    app.controller('hiddenWindowCtrl', ['$scope', '$timeout', 'gfDB', '$rootScope', function($scope, $timeout, gfDB, $rootScope){
+        global.windows = {}
+        global.windows.hidden = gui.Window.get();
 
-    // Main Window Ctrl
-    app.controller('mainWindowCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
-        // Check if tray icon exists, if not, create and store in $rootScope
-        if (typeof global.main_window === 'undefined') {
-            // Get main_window and add to global scope
-            global.main_window = gui.Window.get();
-            global.main_window.maximize();
-            // global.main_window.show();
+        // check for active jobs
+        gfDB.find_docs({scheduled_date: new Date().toDateString()}, 'active_jobs').then(
+            function(docs){
+                if (docs.length > 0) {
+                    global.flash_jobs = docs;
+                    // display active flash cards
+                    $timeout(function(){
+                        global.windows.qpopup = gui.Window.open(
+                            'index.html#/qpopup',
+                            {
+                                frame     : false,
+                                toolbar   : false,
+                                max_width : 400,
+                                max_height: 700,
+                                focus     : true,
+                                show      : false
+                            }
+                        );
+                    }, 500);
+                }
+            },
+            function(err){
+                console.error(err);
+            }
+        );
+
+
+        // check if main window exists
+        if (typeof global.windows.main === 'undefined') {
+            global.windows.main = gui.Window.open(
+                'index.html#/main',
+                {
+                    frame        : false,
+                    toolbar      : false,
+                    min_width    : 800,
+                    min_height   : 500,
+                    transparent  : true,
+                    focus        : true,
+                    position     : "center",
+                    show         : false
+                }
+            );
+            global.windows.main.maximize();
+            setTimeout(function () {
+                // global.windows.main.show();
+            }, 300);
         }
 
         // Check if tray icon exists
         if (typeof global.tray === 'undefined') {
             // Create and store in global scope
-            global.tray = new gui.Tray({ title: 'GoldFish', icon: 'assets/images/goldfish.png' });
+            global.tray = new gui.Tray({
+                title: 'GoldFish',
+                icon: 'assets/images/goldfish.png'
+            });
 
             // Create a menu for tray icon
             var menu      = new gui.Menu();
@@ -35,37 +77,19 @@
                 type : 'normal',
                 label: 'GoldFish Home',
                 click: function(){
-                    if(typeof global.main_window !== 'undefined'){
-                        global.main_window.show();
-                    }
-                    else{
-                        // FIXME: segfault on trigger after closed main window(alt-f4)
-                        global.main_window = gui.Window.open(
-                            'index.html#/main',
-                            {
-                                frame      : false,
-                                toolbar    : false,
-                                min_width  : 800,
-                                min_height : 500,
-                                transparent: true,
-                                focus      : true,
-                                show       : false
-                            }
-                        );
-                        global.main_window.maximize();
-                    }
+                    if(typeof global.windows.main !== 'undefined')
+                        global.windows.main.show();
                 }
             });
             var item_close = new gui.MenuItem({
                 type : 'normal',
                 label: 'Close',
                 click: function(){
-                    if (typeof global.main_window !== 'undefined')
-                        global.main_window.close();
-                    if (typeof global.main_window !== 'undefined')
-                        global.hidden_window.close();
-                    if (typeof global.main_window !== 'undefined')
-                        global.qpopup_window.close();
+                    for (var win in global.windows) {
+                        if (global.windows.hasOwnProperty(win)) {
+                            global.windows[win].close(true);
+                        }
+                    }
                 }
             });
             menu.append(item_home);
@@ -73,20 +97,17 @@
 
             global.tray.menu = menu;
         }
+    }]);
 
-        if (typeof global.hidden_window === 'undefined') {
-            global.hidden_window = gui.Window.open(
-                'index.html#/hidden',
-                {
-                    frame     : false,
-                    toolbar   : false,
-                    max_width : 400,
-                    max_height: 700,
-                    focus     : true,
-                    show      : false
-                }
-            );
-        }
+    /***************************/
+    /* Main Window Controllers */
+    /***************************/
+
+    // Main Window Ctrl
+    app.controller('mainWindowCtrl', ['$scope', '$rootScope', function($scope, $rootScope){
+        global.windows.main.on('close', function(){
+            global.windows.main.hide();
+        });
     }]);
 
     // Sidebar Ctrl
@@ -155,36 +176,18 @@
         }
 
         $scope.win_minimize = function(){
-            global.main_window.minimize();
+            global.windows.main.minimize();
         }
 
         $scope.win_maximize = function(){
-            if(!$scope.is_max) global.main_window.maximize();
-            else global.main_window.unmaximize();
+            if(!$scope.is_max) global.windows.main.maximize();
+            else global.windows.main.unmaximize();
             $scope.is_max = !$scope.is_max;
         }
 
         $scope.win_close = function(){
-            global.main_window.hide();
+            global.windows.main.hide();
         }
-    }]);
-
-    // Hidden Window Ctrl
-    app.controller('hiddenWindowCtrl', ['$scope', '$timeout', 'gfDB', '$rootScope', function($scope, $timeout, gfDB, $rootScope){
-        // display active flash cards
-        $timeout(function(){
-            global.qpopup_window = gui.Window.open(
-                'index.html#/qpopup',
-                {
-                    frame     : false,
-                    toolbar   : false,
-                    max_width : 400,
-                    max_height: 700,
-                    focus     : true,
-                    show      : false
-                }
-            );
-        }, 500);
     }]);
 
     /**********************************/
@@ -195,7 +198,7 @@
     app.controller('homeScreenCtrl', ['$scope', '$rootScope', 'gfDB', function($scope, $rootScope, gfDB){
         // Trigger qpoppup
         $rootScope.trigger_qpopup = function(){
-            global.qpopup_window = gui.Window.open(
+            global.windows.qpopup = gui.Window.open(
                 'index.html#/qpopup',
                 {
                     frame     : false,
@@ -209,17 +212,17 @@
         };
 
         $scope.popup_devtools = function(){
-            global.qpopup.showDevTools();
+            global.windows.qpopup.showDevTools();
         }
         $scope.hidden_window_devtools = function(){
-            global.hidden_window.showDevTools();
+            global.windows.hidden.showDevTools();
         }
 
         $scope.show_devtools = function(){
-            global.main_window.showDevTools();
+            global.windows.main.showDevTools();
         };
         $scope.hide_win = function(){
-            global.main_window.hide();
+            global.windows.main.hide();
         };
     }]);
 
@@ -743,30 +746,29 @@
 
     // Qpopup Ctrl
     app.controller('qpopupCtrl', ['$scope', 'srs', 'gfDB', '$timeout', function($scope, srs, gfDB, $timeout){
-        $scope.win = gui.Window.get();
-        // $scope.win.showDevTools();
+        $scope.win          = gui.Window.get();
         $scope.app_datapath = gui.App.dataPath;
+        $scope.jobs         = global.flash_jobs;
 
-        // get all active jobs
-        gfDB.find_docs({scheduled_date: new Date().toDateString()}, 'active_jobs').then(
-            function(docs){
-                $scope.jobs = docs;
-                if ($scope.jobs.length > 0){
-                    $scope.job_cntr = 0;
-                    $scope.load_new_card();
-                }
-                else{
-                    global.qpopup_window.close();
-                }
-            },
-            function(err){
-                console.error(err);
+        // prevent Qpopup close using alt+f4
+        global.windows.qpopup.on('close', function(){
+            // pass
+        });
+
+        var init = function(){
+            // called after all fn declarations
+            if ($scope.jobs.length > 0){
+                $scope.job_cntr = 0;
+                $scope.load_new_card();
             }
-        );
+            else{
+                global.windows.qpopup.close(true);
+            }
+        }
 
         $scope.load_new_card = function(){
             if ($scope.job_cntr >= $scope.jobs.length) {
-                global.qpopup_window.close();
+                global.windows.qpopup.close(true);
                 return;
             }
 
@@ -812,7 +814,7 @@
             setTimeout(function(){
                 $scope.win.resizeTo(300, popup.offsetHeight);
                 $scope.set_win_position();
-                global.qpopup_window.show();
+                global.windows.qpopup.show();
             }, 20);
         }
 
@@ -886,6 +888,8 @@
         $scope.cancel = function(all){
             // pass
         }
+
+        init();
     }]);
 
 })();
